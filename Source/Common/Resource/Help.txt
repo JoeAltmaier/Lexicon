@@ -1,0 +1,230 @@
+
+       LEXICON
+
+ Welcome to Lexicon, the word
+ game that tests your vocabulary!
+
+ There are three sub-games in 
+ Lexicon:
+
+Shuffle
+ Slide tiles around to make words. 
+ Each move counts against the 
+ clock.
+
+Shuffle-Clocked
+ Beat the Clock! Moving doesn't
+ count against you.
+
+Crash
+ Swap tiles and try to clear the 
+ board!
+ Bonus for clearing the board
+ completely.
+
+
+The Board:
+
+ Lexicon has an 8X8 tile playing
+ board.  Touch and drag letter
+ tiles to spell words.
+
+ Below the tiles are 
+  the clock, 
+  the Discard Box,
+  the Score,
+  the current Bonus Word and 
+  the Best Word.
+
+ At the bottom are the buttons: 
+  Quit, New, Pause and Mute.
+
+
+Game Play:
+
+ The game starts with the board
+ full of tiles.
+
+ In Shuffle, the tiles automatically
+ slide under the stylus as you drag.  
+ Lift the stylus to drop a tile at the
+ desired location.
+
+ In Crash, touch and drag a tile the
+ same way. When you drop it, it
+ swaps places  with the tile at that
+ location.
+ 
+ When you spell words, they will
+ flash and disappear, showing their
+ score.
+
+  Got a letter you can't use?  
+  Just drag it to the discard box.
+  You get another for free.
+  But don't do it too often!
+  You only get three chances.
+
+ Keep playing until you get stuck,
+ or until you win the level.
+
+ Quit stops the game and gives
+ your score. In crash, letters left on
+ the board count against your
+ score!
+
+ Touch Quit again to return to the
+ main menu.
+
+ New abandons the game and
+ starts a new game at level 1.
+
+ Pause stops the clock. Touch it
+ again to continue.
+
+ Mute turns off sound. Touch it
+ again to get sounds back.
+
+
+Scoring:
+
+ Valid words can be left-to-right or
+ top- to-bottom, but not diagonal.
+ No plurals, past tenses or other
+ inflections allowed.
+
+ So lovely is ok, but not lovelies,
+ lovelier or loveliest.
+
+ No proper names allowed.
+
+ Longer words count:
+
+ Letters   Score
+    4           100
+    5           200
+    6           300
+    7           400
+    8           500
+
+ Bonus letters are colored, and
+ multiply the word value.  Use
+ several bonus letters in one word
+ for super scores!
+
+ Example:
+
+ Word bonus starts at 1X and goes
+ up like this:
+
+   A
+   B
+   C
+   D
+   E
+   F   +1
+   G 
+   H   +1
+   I
+   J   +2
+   K   +1
+   L
+   M
+   N
+   O
+   P
+   Q   +3
+   R
+   S
+   T
+   U
+   V   +1
+   W   +1
+   X   +2
+   Y   +1
+   Z   +3
+
+ Word:         W A V Y
+ Bonus = 1  +1  +1+1 = 4
+
+  WAVY  = 100 X 4 = 400!
+
+ Make more than one word in
+ a single swap, and get a
+ multi-word bonus.
+
+ For example:
+
+    MCOXANOR
+
+ Swap the M and X making
+
+    XCOMANOR
+
+ which is COMA + MANOR.
+
+  COMA = 100
+  MANOR = 200 + 100!
+
+ If other words are made vertically
+ at the same time, the score adds
+ up fast!
+
+ Words within words don't count.
+ So cowboy is just one word, not
+ three.
+
+ If you spell the Bonus Word, it
+ counts 10X its normal score!
+ Then a new bonus word is
+ chosen.
+
+ Your best-scoring word of the
+ game is shown under "Best Word".
+ 
+
+Configuration:
+
+Skin
+
+ Lexicon can load skins, and can
+ use different dictionaries. 
+
+ You can even make your own
+ skins!
+
+ Skins change the appearance of
+ the board, tiles and scores.
+
+ Sounds can be changed.
+
+ The bonus word list is
+ configurable.
+
+ Also background images can be
+ switched each time you win a
+ level.
+
+ Visit our web site from time to
+ time to check out what new skins
+ are available or to download the
+ skin tool.
+
+Dictionary
+
+ Lexicon comes with a 21,000 word
+ dictionary of American English.
+ Larger dictionaries can be loaded,
+ or even dictionaries for other
+ languages! Check out our web site
+ and see if we can meet your
+ need.
+
+
+Acknowledgments:
+
+Thanks to the 12dictsproject:
+       biljir@pobox.com
+
+ http:// personal.riverusers.com/
+      ~thegrendel/software.html

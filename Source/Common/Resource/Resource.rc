@@ -1,0 +1,214 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource1.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource1.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_DEMO                ICON                    "Lexicon.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_BEZEL               PNG                     "Bezel368x494.png"
+
+IDB_BTCLOSE             PNG                     "BmSysCloseStrip.png"
+
+IDB_BTMAXIMIZE          PNG                     "BmSysMaximizeStrip.png"
+
+IDB_BTSYSMENU           PNG                     "BmSysMenuStrip.png"
+
+IDB_BTMINIMIZE          PNG                     "BmSysMinimizeStrip.png"
+
+IDB_TILES               PNG                     "Tiles.png"
+
+IDB_PLAYBOARD           PNG                     "PlayBoard348x464.png"
+
+IDB_QUITBUTTON          PNG                     "BtQuit.png"
+
+IDB_NEWBUTTON           PNG                     "BtNew.png"
+
+IDB_MUTEBUTTON          PNG                     "BtMute.png"
+
+IDB_PAUSEBUTTON         PNG                     "BtPause.png"
+
+IDB_PAUSELEGENDBUTTON   PNG                     "PauseLegend.png"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,0,0,0
+ PRODUCTVERSION 2,0,0,1011
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "Iowa Software Design"
+            VALUE "FileDescription", "Lexicon"
+            VALUE "FileVersion", "2.0.0.0"
+            VALUE "InternalName", "Lexicon.exe"
+            VALUE "LegalCopyright", "Copyright (C) 2007,2020"
+            VALUE "OriginalFilename", "Lexicon.exe"
+            VALUE "ProductName", "Lexicon"
+            VALUE "ProductVersion", "2.0.0.1011"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// WAVE
+//
+
+IDR_CLACK               WAVE                    "Clack.wav"
+
+IDR_BLANK               WAVE                    "blank.wav"
+
+IDW_CHIME               WAVE    DISCARDABLE     "Chime.wav"
+IDW_DISAPPOINTMENT      WAVE    DISCARDABLE     "Disappointment.wav"
+IDW_BURN                WAVE    DISCARDABLE     "Burn.wav"
+IDW_CLACK               WAVE    DISCARDABLE     "Clack.wav"
+IDW_CLICK               WAVE    DISCARDABLE     "Click.wav"
+IDW_DRUMROLL            WAVE    DISCARDABLE     "DrumRoll.wav"
+IDW_SPIRAL              WAVE    DISCARDABLE     "Spiral.wav"
+IDW_BLANK               WAVE    DISCARDABLE     "blank.wav"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP                  "bitmap1.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DICT
+//
+
+IDD_WORDLIST            DICT                    "2of12_4.0.dict"
+
+IDD_BONUSLIST           DICT                    "BonusWordList.txt"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// IMAGE
+//
+
+IDI_DIGITS              IMAGE   DISCARDABLE     "FontFloat.gif"
+IDI_HELP_OK             IMAGE   DISCARDABLE     "HelpOK.jpg"
+IDI_HELP_ABOUT          IMAGE   DISCARDABLE     "HelpAbout.jpg"
+IDI_SELECT_OK           IMAGE   DISCARDABLE     "ConfigOK.jpg"
+IDI_SELECT_CANCEL       IMAGE   DISCARDABLE     "ConfigCancel.jpg"
+IDI_MAIN_PLAY           IMAGE   DISCARDABLE     "MainPlay.jpg"
+IDI_MAIN_CONFIG         IMAGE   DISCARDABLE     "MainConfig.jpg"
+IDI_MAIN_HELP           IMAGE   DISCARDABLE     "MainHelp.jpg"
+IDI_BONUSFONT           IMAGE   DISCARDABLE     "FontScoreboard.gif"
+IDI_BONUSLEVEL          IMAGE   DISCARDABLE     "LevelBonus.gif"
+IDI_CLOCK               IMAGE   DISCARDABLE     "Clock.gif"
+IDI_BACKGROUND          IMAGE   DISCARDABLE     "PlayBackground.jpg"
+IDI_HELP                IMAGE   DISCARDABLE     "HelpBackground.jpg"
+IDI_MAIN                IMAGE   DISCARDABLE     "MainBackground.jpg"
+IDI_MUTEBUTTON          IMAGE   DISCARDABLE     "PlayMute.jpg"
+IDI_NEWBUTTON           IMAGE   DISCARDABLE     "PlayNew.jpg"
+IDI_PAUSEBUTTON         IMAGE   DISCARDABLE     "PlayPause.jpg"
+IDI_PAUSELEGEND         IMAGE   DISCARDABLE     "PauseLegend.gif"
+IDI_QUITBUTTON          IMAGE   DISCARDABLE     "PlayQuit.jpg"
+IDI_SELECT              IMAGE   DISCARDABLE     "ConfigBackground.jpg"
+IDI_TILE                IMAGE   DISCARDABLE     "PlayTiles.gif"
+IDI_MAIN_EXIT           IMAGE   DISCARDABLE     "MainExit.jpg"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXT
+//
+
+IDT_HELP                TEXT                     "Help.txt"
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
