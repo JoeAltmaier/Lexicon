@@ -65,7 +65,7 @@ public:
 	void ChooseBonusWord();
 
 	virtual
-	void Event(EventType, void *)=0;
+	void Event(EventType, void *_id = NULL)=0;
 
 	virtual
 	void Event(EventType, Coord)=0;

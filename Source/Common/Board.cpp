@@ -29,6 +29,10 @@ void Board::Event(EventType evt, void *id) {
 		LevelEnd(true);
 		break;
 
+	case EMainWindow:
+		winBoard.ReturnToMainScreen();
+		break;
+
 	case ENew:
 		ResetScore();
 	case ENextLevel:

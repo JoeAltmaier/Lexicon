@@ -84,6 +84,28 @@ IDB_PAUSEBUTTON         PNG                     "BtPause.png"
 
 IDB_PAUSELEGENDBUTTON   PNG                     "PauseLegend.png"
 
+IDB_MAINBACKGROUND      PNG                     "MainBackground.png"
+
+IDB_MAIN_PLAY           PNG                     "MainPlay.png"
+
+IDB_MAIN_EXIT           PNG                     "MainExit.png"
+
+IDB_MAIN_CONFIG         PNG                     "MainConfig.png"
+
+IDB_MAIN_HELP           PNG                     "MainHelp.png"
+
+IDB_SELECT              PNG                     "ConfigBackground.png"
+
+IDB_SELECT_OK           PNG                     "ConfigOK.png"
+
+IDB_SELECT_CANCEL       PNG                     "ConfigCancel.png"
+
+IDB_HELP                PNG                     "HelpBackground.png"
+
+IDB_HELP_OK             PNG                     "HelpOK.png"
+
+IDB_HELP_ABOUT          PNG                     "HelpAbout.png"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -133,14 +155,21 @@ IDR_CLACK               WAVE                    "Clack.wav"
 
 IDR_BLANK               WAVE                    "blank.wav"
 
-IDW_CHIME               WAVE    DISCARDABLE     "Chime.wav"
-IDW_DISAPPOINTMENT      WAVE    DISCARDABLE     "Disappointment.wav"
-IDW_BURN                WAVE    DISCARDABLE     "Burn.wav"
-IDW_CLACK               WAVE    DISCARDABLE     "Clack.wav"
-IDW_CLICK               WAVE    DISCARDABLE     "Click.wav"
-IDW_DRUMROLL            WAVE    DISCARDABLE     "DrumRoll.wav"
-IDW_SPIRAL              WAVE    DISCARDABLE     "Spiral.wav"
-IDW_BLANK               WAVE    DISCARDABLE     "blank.wav"
+IDW_CHIME               WAVE                    "Chime.wav"
+
+IDW_DISAPPOINTMENT      WAVE                    "Disappointment.wav"
+
+IDW_BURN                WAVE                    "Burn.wav"
+
+IDW_CLACK               WAVE                    "Clack.wav"
+
+IDW_CLICK               WAVE                    "Click.wav"
+
+IDW_DRUMROLL            WAVE                    "DrumRoll.wav"
+
+IDW_SPIRAL              WAVE                    "Spiral.wav"
+
+IDW_BLANK               WAVE                    "blank.wav"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -166,28 +195,33 @@ IDD_BONUSLIST           DICT                    "BonusWordList.txt"
 // IMAGE
 //
 
-IDI_DIGITS              IMAGE   DISCARDABLE     "FontFloat.gif"
-IDI_HELP_OK             IMAGE   DISCARDABLE     "HelpOK.jpg"
-IDI_HELP_ABOUT          IMAGE   DISCARDABLE     "HelpAbout.jpg"
-IDI_SELECT_OK           IMAGE   DISCARDABLE     "ConfigOK.jpg"
-IDI_SELECT_CANCEL       IMAGE   DISCARDABLE     "ConfigCancel.jpg"
-IDI_MAIN_PLAY           IMAGE   DISCARDABLE     "MainPlay.jpg"
-IDI_MAIN_CONFIG         IMAGE   DISCARDABLE     "MainConfig.jpg"
-IDI_MAIN_HELP           IMAGE   DISCARDABLE     "MainHelp.jpg"
-IDI_BONUSFONT           IMAGE   DISCARDABLE     "FontScoreboard.gif"
-IDI_BONUSLEVEL          IMAGE   DISCARDABLE     "LevelBonus.gif"
-IDI_CLOCK               IMAGE   DISCARDABLE     "Clock.gif"
-IDI_BACKGROUND          IMAGE   DISCARDABLE     "PlayBackground.jpg"
-IDI_HELP                IMAGE   DISCARDABLE     "HelpBackground.jpg"
-IDI_MAIN                IMAGE   DISCARDABLE     "MainBackground.jpg"
-IDI_MUTEBUTTON          IMAGE   DISCARDABLE     "PlayMute.jpg"
-IDI_NEWBUTTON           IMAGE   DISCARDABLE     "PlayNew.jpg"
-IDI_PAUSEBUTTON         IMAGE   DISCARDABLE     "PlayPause.jpg"
-IDI_PAUSELEGEND         IMAGE   DISCARDABLE     "PauseLegend.gif"
-IDI_QUITBUTTON          IMAGE   DISCARDABLE     "PlayQuit.jpg"
-IDI_SELECT              IMAGE   DISCARDABLE     "ConfigBackground.jpg"
-IDI_TILE                IMAGE   DISCARDABLE     "PlayTiles.gif"
-IDI_MAIN_EXIT           IMAGE   DISCARDABLE     "MainExit.jpg"
+IDI_DIGITS              IMAGE                   "FontFloat.gif"
+
+IDI_HELP_OK             IMAGE                   "HelpOK.jpg"
+
+IDI_HELP_ABOUT          IMAGE                   "HelpAbout.jpg"
+
+IDI_BONUSFONT           IMAGE                   "FontScoreboard.gif"
+
+IDI_BONUSLEVEL          IMAGE                   "LevelBonus.gif"
+
+IDI_CLOCK               IMAGE                   "Clock.gif"
+
+IDI_BACKGROUND          IMAGE                   "PlayBackground.jpg"
+
+IDI_HELP                IMAGE                   "HelpBackground.jpg"
+
+IDI_MUTEBUTTON          IMAGE                   "PlayMute.jpg"
+
+IDI_NEWBUTTON           IMAGE                   "PlayNew.jpg"
+
+IDI_PAUSEBUTTON         IMAGE                   "PlayPause.jpg"
+
+IDI_PAUSELEGEND         IMAGE                   "PauseLegend.gif"
+
+IDI_QUITBUTTON          IMAGE                   "PlayQuit.jpg"
+
+IDI_TILE                IMAGE                   "PlayTiles.gif"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -195,7 +229,7 @@ IDI_MAIN_EXIT           IMAGE   DISCARDABLE     "MainExit.jpg"
 // TEXT
 //
 
-IDT_HELP                TEXT                     "Help.txt"
+IDT_HELP                TEXT                    "Help.txt"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

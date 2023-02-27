@@ -137,6 +137,7 @@ private:
 	Timer timerFloat;
 
 	TWaveFile   wavClack;
+	TWaveFile   wavBurn;
 	TWaveDevice devWave;
 };
 

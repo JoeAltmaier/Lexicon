@@ -15,7 +15,8 @@ typedef uint16_t U16;
 typedef int32_t S32;
 typedef uint32_t U32;
 
-typedef enum { ENextLevel, ELetterNew, ELetterUsed, ELettersUsed, EQuit, ENew, EPause, EMute, ETileDropped, ESwap, EStill, EScore, EScoreUpdate, EBonusWord, EBonusUsed, EBestWord, EBoardExhausted, EBoardImpossible, EWinComplete } EventType;
+typedef enum { ENextLevel, ELetterNew, ELetterUsed, ELettersUsed, EQuit, ENew, EPause, EMute, ETileDropped, ESwap, EStill, EScore, EScoreUpdate, EBonusWord, EBonusUsed, EBestWord, EBoardExhausted, EBoardImpossible, EWinComplete, EMainWindow
+} EventType;
 
 typedef enum { NLeft, NRight, NTop, NBottom, NNot } NeighborType;
 

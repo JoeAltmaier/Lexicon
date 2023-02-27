@@ -74,6 +74,13 @@ void Lexicon::ClearMatch() {
 
 // Level is over, account for remaining score
 void Lexicon::LevelEnd(bool _bQuit) {
+	// If not playing, hitting exit should return us to the main app screen
+	if (state != PLAY_LEVEL)
+	{
+		Event(EMainWindow);
+		return;
+	}
+
 	if (_bQuit)
 		state = PLAY_IDLE;
 	else
@@ -456,6 +463,7 @@ void Lexicon::AnimationIdle() {
 		break;
 	case PLAY_END:
 		Event(ENextLevel, 0);
+		state = PLAY_LEVEL;
 		break;
 	default: break;
 	}

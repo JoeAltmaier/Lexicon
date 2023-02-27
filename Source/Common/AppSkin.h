@@ -45,6 +45,14 @@ public:
 			//throw MeteorExceptionSkinFailedToLoadBitmap(szTmp);
 		}
 	}
+	void LoadDataImage(const char* _pDataBytes, int _cbDataBytes, TBitmap& _bm) {
+		ERC erc;
+		if ((erc = _bm.LoadDataImage(_pDataBytes, _cbDataBytes)) != OK) {
+			char szTmp[128];
+				sprintf(szTmp, "Unable to load PNG bitmap resource.");
+				//throw MeteorExceptionSkinFailedToLoadBitmap(szTmp);
+		}
+	}
 
 public:
 	static void SetPath(const char *_pszPath) { if (_pszPath) strcpy(szPath,_pszPath); else strcpy(szPath,""); }
@@ -96,6 +104,11 @@ public:
 		return SButton::Create(_nStyle,&bitmap,0,_flags,_nThemes,_point,_pParent,_id);
 	}
 #endif
+	BOOL Create(DWORD _nStyle, const char* _pDataBytes, int _cbDataBytes, CRect _rcButton, SElementRef* _pParent, UINT _id = 0) {
+		LoadDataImage(_pDataBytes, _cbDataBytes, bitmap);
+		return SButton::Create(_nStyle, &bitmap, bitmap.GetRect(), _rcButton.Size(), _rcButton, _pParent, _id);
+	}
+
 	UINT Width()	{ return bitmap.Width(); }
 	UINT Height()	{ return bitmap.Height();}
 

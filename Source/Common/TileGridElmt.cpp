@@ -23,7 +23,7 @@
 #include "TileGridElmt.h"
 #include "TColorNames.h"
 #include "SWnd.h"
-#include "resource.h"
+#include "resource1.h"
 #include "Random.h"
 
 // 50ms is 20 fps, 33ms is ~30 fps, 20ms is 50 fps , 16.7ms is ~60 fps
@@ -43,6 +43,9 @@ ERC TileGridElmt::OnCreate(SCreateStruct &_cs)
 		return erc;
 
 	if ((erc = wavClack.LoadResource("IDR_CLACK")) != OK)
+		return erc;
+
+	if ((erc = wavBurn.LoadResource(MAKEINTRESOURCE(IDW_BURN))) != OK)
 		return erc;
 
 	if ((erc = devWave.Open()) != OK)
@@ -265,6 +268,7 @@ void TileGridElmt::Release(TileElmt* pElmtTile)
 		// wParam is ptr to double cell coord for swap
 		NotifyParent(notifyRELEASE, (LPARAM)new SwapTiles(Coord(ptElmt.x / pElmtTile->Width(), ptElmt.y / pElmtTile->Height()), Coord(ptElmtSwap.x / pElmtUnder->Width(), ptElmtSwap.y / pElmtUnder->Height())));
 	}
+
 	floaters.MakeFloatersTopmost();
 }
 
@@ -364,6 +368,8 @@ void TileGridElmt::PrepareDefaultDissolve()
 void TileGridElmt::BurnTileElmt(Burner* _pBurner, int _frameTo)
 {
 	_pBurner->StartBurner(listBurner, _frameTo);
+	if (!bMute)
+		devWave.Play(&wavBurn);
 
 	timerBurn.Start(TICKBURN);
 }

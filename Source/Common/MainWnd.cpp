@@ -25,6 +25,9 @@
 #include "Random.h"
 #include "Resource1.h"
 #include "VersionString.h"
+#include "WinStart.h"
+#include "WinConfig.h"
+#include "WinHelpAbout.h"
 
 BEGIN_MESSAGE_MAP(MainWnd, SWnd)
 	ON_WM_CREATE()
@@ -91,7 +94,29 @@ int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	elmtPlay.SetFocus();
 
-	pBoard->Event(ENew, NULL); // New game
+//	pBoard->Event(ENew, NULL); // New game
+
+	CPoint ptWnd;
+	Registry::GetWindowPos(ptWnd);
+
+	CRect rcWnd = CRect(CPoint(ptWnd + CSize(10,20)), svLex.svimgBackground.rect.Size());
+
+	pWinStart = new WinStart(*this);
+	pWinStart->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Start"), (WS_VISIBLE | WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd, NULL, 0);
+	pWinStart->ShowWindow(SW_SHOW);
+	pWinStart->UpdateWindow();
+
+	pWinConfig = new WinConfig(*this);
+	pWinConfig->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Select"), ( WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd, NULL, 0);
+	pWinConfig->ShowWindow(SW_HIDE);
+	pWinConfig->UpdateWindow();
+
+	pWinHelp = new WinHelpAbout(*this);
+	pWinHelp->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Select"), (WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd , NULL, 0);
+	pWinHelp->ShowWindow(SW_HIDE);
+	pWinHelp->UpdateWindow();
+
+	ReturnToMainScreen();
 
 	return OK;
 }
@@ -161,6 +186,14 @@ void MainWnd::About()
 	AboutDlg dlgAbout;
 	dlgAbout.DoModal(); 
 }
+
+void MainWnd::StartGame() { pWinStart->ShowWindow(SW_HIDE);  pBoard->Event(ENew, NULL); }
+
+void MainWnd::StartSelect() { pWinConfig->ShowWindow(SW_SHOW); }
+
+void MainWnd::StartHelp() { pWinHelp->ShowWindow(SW_SHOW); }
+
+void MainWnd::ReturnToMainScreen() { pWinConfig->ShowWindow(SW_HIDE);  pWinStart->ShowWindow(SW_SHOW); }
 
 void MainWnd::PopulateTiles(U8 *letters)
 {
@@ -335,65 +368,65 @@ void MainWnd::LoadSkinDefaults() {
 	// Main setup screens
 	
 	// Help screen
-	svLex.svimgHelp.pBytes = LocateResource(IDI_HELP, TEXT("IMAGE"), &svLex.svimgHelp.cb);
-	svLex.svimgHelp.rect = CRect(0, 0, 240, 320);
+	svLex.svimgHelp.pBytes = LocateResource(IDB_HELP, TEXT("PNG"), &svLex.svimgHelp.cb);
+	svLex.svimgHelp.rect = CRect(0, 0, 348, 464);
 
-	svLex.svrectHelpBox.rect = CRect(14, 79, 226, 279);
+	svLex.svrectHelpBox.rect = CRect(28, 158, 312, 440);
 
-	svLex.svimgHelpOk.pBytes = LocateResource(IDI_HELP_OK, TEXT("IMAGE"), &svLex.svimgHelpOk.cb);
+	svLex.svimgHelpOk.pBytes = LocateResource(IDB_HELP_OK, TEXT("PNG"), &svLex.svimgHelpOk.cb);
 	svLex.svimgHelpOk.rect = CRect(0, 0, 84, 28);
-	svLex.svrectHelpOk.rect = CRect(8, 288, 92, 316);
+	svLex.svrectHelpOk.rect = CRect(CPoint(10, 416), svLex.svimgHelpOk.rect.Size());
 	svLex.svrectHelpOkTouch.rect = CRect(10, 290, 90, 310);
 
-	svLex.svimgHelpAbout.pBytes = LocateResource(IDI_HELP_ABOUT, TEXT("IMAGE"), &svLex.svimgHelpAbout.cb);
+	svLex.svimgHelpAbout.pBytes = LocateResource(IDB_HELP_ABOUT, TEXT("PNG"), &svLex.svimgHelpAbout.cb);
 	svLex.svimgHelpAbout.rect = CRect(0, 0, 84, 28);
-	svLex.svrectHelpAbout.rect = CRect(148, 288, 232, 316);
+	svLex.svrectHelpAbout.rect = CRect(CPoint(216, 416), svLex.svimgHelpAbout.rect.Size());
 	svLex.svrectHelpAboutTouch.rect = CRect(150, 290, 230, 310);
 
 	svLex.svtextHelp.pString = (char*)LocateResource(IDT_HELP, TEXT("TEXT"), &svLex.svtextHelp.cb);
 
 	// Config (Select) screen
-	svLex.svimgSelect.pBytes = LocateResource(IDI_SELECT, TEXT("IMAGE"), &svLex.svimgSelect.cb);
-	svLex.svimgSelect.rect = CRect(0, 0, 240, 320);
+	svLex.svimgSelect.pBytes = LocateResource(IDB_SELECT, TEXT("PNG"), &svLex.svimgSelect.cb);
+	svLex.svimgSelect.rect = CRect(0, 0, 348, 464);
 
 	svLex.svrectSkinsBox.rect = CRect(14, 80, 226, 162);
 	svLex.svrectDictsBox.rect = CRect(14, 197, 226, 279);
 
-	svLex.svimgSelectOk.pBytes = LocateResource(IDI_SELECT_OK, TEXT("IMAGE"), &svLex.svimgSelectOk.cb);
-	svLex.svimgSelectOk.rect = CRect(0, 0, 84, 28);
-	svLex.svrectSelectOk.rect = CRect(8, 288, 92, 316);
+	svLex.svimgSelectOk.pBytes = LocateResource(IDB_SELECT_OK, TEXT("PNG"), &svLex.svimgSelectOk.cb);
+	svLex.svimgSelectOk.rect = CRect(0, 0, 126, 42);
+	svLex.svrectSelectOk.rect = CRect(CPoint(10, 416), svLex.svimgSelectOk.rect.Size());;
 	svLex.svrectSelectOkTouch.rect = CRect(10, 290, 90, 310);
 
-	svLex.svimgSelectCancel.pBytes = LocateResource(IDI_SELECT_CANCEL, TEXT("IMAGE"), &svLex.svimgSelectCancel.cb);
-	svLex.svimgSelectCancel.rect = CRect(0, 0, 84, 28);
-	svLex.svrectSelectCancel.rect = CRect(148, 288, 232, 316);
+	svLex.svimgSelectCancel.pBytes = LocateResource(IDB_SELECT_CANCEL, TEXT("PNG"), &svLex.svimgSelectCancel.cb);
+	svLex.svimgSelectCancel.rect = CRect(0, 0, 126, 42);
+	svLex.svrectSelectCancel.rect = CRect(CPoint(216, 416), CSize(svLex.svimgSelectCancel.rect.Size()));
 	svLex.svrectSelectCancelTouch.rect = CRect(150, 290, 230, 310);
 
 	// Main screen
-	svLex.svimgMain.pBytes = LocateResource(IDI_MAIN, TEXT("IMAGE"), &svLex.svimgMain.cb);
-	svLex.svimgMain.rect = CRect(0, 0, 240, 320);
+	svLex.svimgMain.pBytes = LocateResource(IDB_MAINBACKGROUND, TEXT("PNG"), &svLex.svimgMain.cb);
+	svLex.svimgMain.rect = CRect(0, 0, 348, 464);
 
 	svLex.svrectHighScoresBox.rect = CRect(14, 79, 226, 161);
-	svLex.svrectGameModeBox.rect = CRect(14, 197, 226, 251);
+	svLex.svrectGameModeBox.rect = CRect(14, 128, 226, 251);
 
-	svLex.svimgMainPlay.pBytes = LocateResource(IDI_MAIN_PLAY, TEXT("IMAGE"), &svLex.svimgMainPlay.cb);
-	svLex.svimgMainPlay.rect = CRect(0, 0, 84, 28);
-	svLex.svrectMainPlay.rect = CRect(28, 260, 112, 288);
+	svLex.svimgMainPlay.pBytes = LocateResource(IDB_MAIN_PLAY, TEXT("PNG"), &svLex.svimgMainPlay.cb);
+	svLex.svimgMainPlay.rect = CRect(0, 0, 126, 42);
+	svLex.svrectMainPlay.rect = CRect(CPoint(42, 379), svLex.svimgMainPlay.rect.Size());
 	svLex.svrectMainPlayTouch.rect = CRect(30, 262, 110, 282);
 
-	svLex.svimgMainExit.pBytes = LocateResource(IDI_MAIN_EXIT, TEXT("IMAGE"), &svLex.svimgMainExit.cb);
-	svLex.svimgMainExit.rect = CRect(0, 0, 84, 28);
-	svLex.svrectMainExit.rect = CRect(8, 288, 92, 316);
+	svLex.svimgMainExit.pBytes = LocateResource(IDB_MAIN_EXIT, TEXT("PNG"), &svLex.svimgMainExit.cb);
+	svLex.svimgMainExit.rect = CRect(0, 0, 126, 42);
+	svLex.svrectMainExit.rect = CRect(CPoint(10,  416), svLex.svimgMainExit.rect.Size());
 	svLex.svrectMainExitTouch.rect = CRect(10, 290, 90, 310);
 
-	svLex.svimgMainConfig.pBytes = LocateResource(IDI_MAIN_CONFIG, TEXT("IMAGE"), &svLex.svimgMainConfig.cb);
-	svLex.svimgMainConfig.rect = CRect(0, 0, 84, 28);
-	svLex.svrectMainConfig.rect = CRect(128, 260, 212, 288);
+	svLex.svimgMainConfig.pBytes = LocateResource(IDB_MAIN_CONFIG, TEXT("PNG"), &svLex.svimgMainConfig.cb);
+	svLex.svimgMainConfig.rect = CRect(0, 0, 126, 42);
+	svLex.svrectMainConfig.rect = CRect(CPoint(188, 379), svLex.svimgMainConfig.rect.Size());
 	svLex.svrectMainConfigTouch.rect = CRect(130, 262, 210, 282);
 
-	svLex.svimgMainHelp.pBytes = LocateResource(IDI_MAIN_HELP, TEXT("IMAGE"), &svLex.svimgMainHelp.cb);
-	svLex.svimgMainHelp.rect = CRect(0, 0, 84, 28);
-	svLex.svrectMainHelp.rect = CRect(148, 288, 232, 316);
+	svLex.svimgMainHelp.pBytes = LocateResource(IDB_MAIN_HELP, TEXT("PNG"), &svLex.svimgMainHelp.cb);
+	svLex.svimgMainHelp.rect = CRect(0, 0, 126, 42);
+	svLex.svrectMainHelp.rect = CRect(CPoint(216, 416), svLex.svimgMainHelp.rect.Size());
 	svLex.svrectMainHelpTouch.rect = CRect(150, 290, 230, 310);
 
 	// Game board

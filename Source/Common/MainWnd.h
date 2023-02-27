@@ -33,6 +33,10 @@
 #include "MainApp.h"
 #include "Skins.h"
 
+class WinStart;
+class WinConfig;
+class WinHelpAbout;
+
 class MainWnd : public SWnd {
 public:
 	MainWnd(): config(HKEY_CURRENT_USER, TEXT("Software\\Iowa Software Design\\Lexicon")), pSkinLoader(NULL) { }// : hCurSave(NULL) { } 
@@ -41,7 +45,6 @@ public:
 
 public:
 	void About();
-	void Reset();
 	void PopulateTiles(U8 *); // in playelmt, Board, from New etc
 	void Time(S32 cTick) {} // from board, to clock element
 	void ScoreAnimation(const Coord& cd, const U8* pWord, S32 score, BOOL bHoriz);
@@ -50,6 +53,13 @@ public:
 	void SetBestWord(const U8* _pBestWord);
 	void AddAnimation(const Coord& cd) {}
 	void StartAnimation(const Coord& cd);
+
+	void StartGame();
+	void ReturnToMainScreen();
+	void Exit() { exit(0); }
+	void StartSelect();
+	void StartHelp();
+
 // These aren't referenced yet!
 //	void StopAnimation(Animation&);
 	/*
@@ -85,6 +95,10 @@ public:
 	SkinValueText svtext;
 
 	SkinValueDict svdictLoad;
+
+	WinStart* pWinStart;
+	WinConfig* pWinConfig;
+	WinHelpAbout* pWinHelp;
 
 protected:
 	DECLARE_MESSAGE_MAP()
