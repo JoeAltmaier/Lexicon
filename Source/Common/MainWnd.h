@@ -53,7 +53,7 @@ public:
 	void SetBestWord(const U8* _pBestWord);
 	void AddAnimation(const Coord& cd) {}
 	void StartAnimation(const Coord& cd);
-
+	void LevelBonus(U32 bOn) { elmtPlay.LevelBonus(bOn); }
 	void StartGame();
 	void ReturnToMainScreen();
 	void Exit() { exit(0); }

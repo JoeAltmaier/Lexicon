@@ -398,7 +398,7 @@ void TileGridElmt::OnTimerBurn(Timer* _pTimer)
 
 void TileGridElmt::AnimationIdle()
 {
-	// All burning etc has ceased. Time to drop tiles to squash gaps
+	// All burning has ceased. Time to drop tiles to squash gaps
 
 	int xTile = nMARGINLEFT;
 

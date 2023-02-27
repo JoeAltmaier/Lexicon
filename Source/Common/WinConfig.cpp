@@ -45,6 +45,7 @@ int  WinConfig::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	selectSkin.Create(0, &font, TColor(0), svLex.svrgbTransparent.color, SElement::esVISIBLE, svLex.svrectGameModeBox.rect, this, 0);
 
 	selectSkin.AddString(TEXT("Rosewood"));
+	selectSkin.MoveOrderTop();
 
 	bmBackground.Create(svLex.svimgSelect.rect.Size(), 0);
 	bmBackground.LoadDataImage((const char *)svLex.svimgSelect.pBytes, svLex.svimgSelect.cb);

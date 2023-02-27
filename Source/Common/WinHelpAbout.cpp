@@ -19,8 +19,8 @@ BEGIN_MESSAGE_MAP(WinHelpAbout, SWnd)
 	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
-WinHelpAbout::WinHelpAbout(MainWnd& _winBoard)
-	: winBoard(_winBoard)
+WinHelpAbout::WinHelpAbout(MainWnd& _winBoard, const char *_text)
+	: winBoard(_winBoard), text(_text)
 {
 }
 
@@ -42,9 +42,10 @@ int  WinHelpAbout::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	logfont.lfWeight = FW_BOLD;
 
 	font.LoadLogFont(&logfont, svLex.svrgbTransparent.color);
-	helpText.Create(0, &font, TColor(0), svLex.svrgbTransparent.color, SElement::esVISIBLE, svLex.svrectGameModeBox.rect, this, 0);
+	helpText.Create(0, &font, TColor(0), svLex.svrectHelpBox.rect, this, 0);
 
-	helpText.AddString(TEXT("lorem ipsum"));
+	helpText.SetText(text);
+	helpText.MoveOrderTop();
 
 	bmBackground.Create(svLex.svimgHelp.rect.Size(), 0);
 	bmBackground.LoadDataImage((const char*)svLex.svimgHelp.pBytes, svLex.svimgHelp.cb);
@@ -61,8 +62,7 @@ BOOL WinHelpAbout::OnElmtButtonNotify(SButtonControl* _pElmt, int _tEvent, CPoin
 {
 	switch (_pElmt->GetId()) {
 	case IDB_HELP_OK:
-		// Start a game
-		Process();
+		winBoard.ReturnToMainScreen();
 		break;
 
 	case IDB_HELP_ABOUT:
@@ -79,16 +79,6 @@ BOOL WinHelpAbout::OnElmtButtonNotify(SButtonControl* _pElmt, int _tEvent, CPoin
 void WinHelpAbout::Process() {
 
 }
-
-BOOL WinHelpAbout::OnElmtListBox(SListBox* _pElmt, int _nNotification)
-{
-	if (_pElmt == &helpText)
-	{
-	}
-
-	return FALSE;
-}
-
 
 VOID WinHelpAbout::OnBlend(TBitmap& _bmCanvas, const CRect& _rcElmt, const CRect& _rcClip)
 {

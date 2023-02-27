@@ -16,7 +16,7 @@ char Lexicon::aChDist[]="aaaaaaaaabbccddddeeeeeeeeeffggghhiiiiiiiiijkllllmmnnnnn
 U32 Lexicon::nDist;
 
 Lexicon::Lexicon(U8 *pWords, U32 cb, U8 *_pBonusList, U32 _cbBonusList, BOOL _bRandomBonus, Coord _size, U32 _cbWordMin)
-: size(_size), dictionary(pWords, cb, _pBonusList, _cbBonusList), cbWordMin(_cbWordMin), pBonusList(_pBonusList), cbBonusList(_cbBonusList), bRandomBonus(_bRandomBonus), iBonus(0), state(PLAY_IDLE)
+: size(_size), dictionary(pWords, cb, _pBonusList, _cbBonusList), cbWordMin(_cbWordMin), pBonusList(_pBonusList), cbBonusList(_cbBonusList), bRandomBonus(_bRandomBonus), iBonus(0), state(PLAY_IDLE), cLevelsConsecutive(0)
 {
 	board=new U8[size.x * size.y+1];
 	board[size.x * size.y]=0;
@@ -86,6 +86,10 @@ void Lexicon::LevelEnd(bool _bQuit) {
 	else
 		state = PLAY_END;
 
+	// If a 'fresh level' with no score so far, no penalty
+	if (NoBlank())
+		return; 
+
 	// Debit remaining tiles
 	Coord cd;
 	bool bAllBlank = true;
@@ -99,10 +103,25 @@ void Lexicon::LevelEnd(bool _bQuit) {
 				Blank(cd);
 			}
 
-	if (bAllBlank)
+	if (true)//(bAllBlank)
 	{
-		// Level bonus!
+		cLevelsConsecutive++;
+
+		// Credit the score
+		U32 dScore = cLevelsConsecutive * 10000;
+		score += dScore;
+		Event(EScoreUpdate, (void*)score);
+
+		// Show the bonus
+		Coord cd(size.x / 2, size.y / 2);
+		U8 aLevelBonus[] = "x";
+		Event(EScore, new Score(cd, aLevelBonus, 1, dScore, true));
+
+		// Turn on the Level Bonus legend
+		Event(ELevelBonus, (void*)1);
 	}
+	else
+		cLevelsConsecutive = 0;
 }
 
 void Lexicon::ChooseBonusWord() {
@@ -177,6 +196,16 @@ BOOL Lexicon::IsBlank(const Coord &cd)  {
 		return true;
 
 	return false;
+}
+
+BOOL Lexicon::NoBlank() {
+	Coord cd;
+	for (cd.x = 0; cd.x < size.x; cd.x++)
+		for (cd.y = 0; cd.y < size.y; cd.y++)
+			if (IsBlank(cd))
+				return false;
+
+	return true;
 }
 
 NeighborType Lexicon::Neighbor(const Coord &c1, const Coord &c2)  {
@@ -371,11 +400,6 @@ void Lexicon::ChScoreDebit(U8 ch, const Coord &cd) {
 	Event(EScore, new Score(cd, &ch, 1, -dScore, true));
 }
 
-void Lexicon::Bonus(S32 dScore) { 
-	score += dScore; 
-	Event(EScoreUpdate, (void*)score);
-}
-
 BOOL Lexicon::DirtyRow(Coord cd, U32 cCh) {
 	while (cCh--)
 		if (IsDirty(cd))
@@ -462,6 +486,7 @@ void Lexicon::AnimationIdle() {
 		TestImpossible();
 		break;
 	case PLAY_END:
+		Event(ELevelBonus, 0); // legend off
 		Event(ENextLevel, 0);
 		state = PLAY_LEVEL;
 		break;

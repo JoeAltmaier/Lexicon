@@ -43,6 +43,7 @@ class Lexicon {
 	char aLastPossibleMatch[32];
 	char aBestWord[32];
 	U32 dScoreBestWord;
+	U32 cLevelsConsecutive;
 
 	static
 	char aChDist[];
@@ -80,7 +81,6 @@ public:
 	Coord Size() { return size; }
 
 	U32 GetScore() { return score; }
-	void Bonus(S32 dScore);
 
 	U8 &Letter(const Coord &cd) { return board[size.x * cd.y + cd.x]; }
 
@@ -93,6 +93,7 @@ public:
 
 	NeighborType Neighbor(const Coord &c1, const Coord &c2) ;
 	BOOL IsBlank(const Coord &cd);
+	BOOL NoBlank();
 	void AnimationIdle();
 	U8* Letters() { return board; }
 

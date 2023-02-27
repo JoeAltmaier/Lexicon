@@ -40,6 +40,7 @@
 #define PLAYMUTEBUTTON       "IDB_MUTEBUTTON"
 #define PLAYPAUSEBUTTON       "IDB_PAUSEBUTTON"
 #define PLAYPAUSELEGENDBUTTON       "IDB_PAUSELEGENDBUTTON"
+#define PLAYLEVELBONUSBUTTON       "IDB_BONUSLEVEL"
 
 // Main Window Non-Client area element
 //
@@ -70,6 +71,7 @@ public:
 	void SetScore(U32 score);
 	void StartAnimation(const Coord& cd) { elmtTileGrid.StartAnimation(cd); }
 	void AnimationIdle() { elmtTileGrid.AnimationIdle(); }
+	void LevelBonus(U32 bOn) { elmtLevelBonus.SetItem(!bOn); }
 
 	bool IsNew(SElement* pElmt) { return (pElmt == &elmtBtNew); }
 	void Quit()
@@ -87,10 +89,12 @@ private:
 	MskResButton elmtBtMute;
 	MskResButton elmtBtPause;
 	MskResDecal elmtPauseLegend;
+	MskResDecal elmtLevelBonus;
 	SFont font;
 	STextbox elmtBonusWord;
 	STextbox elmtBestWord;
 	STextbox elmtScore;
+	Coord cdCenter;
 };
 
 #endif	// __PlayAreaElmt_h

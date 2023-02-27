@@ -86,6 +86,10 @@ void Board::Event(EventType evt, void *id) {
 		winBoard.SetBonusWord((const U8*)id);
 		break;
 
+	case ELevelBonus:
+		winBoard.LevelBonus((U32)id);
+		break;
+
 	case EBonusUsed:
 		ChooseBonusWord();
 		break;

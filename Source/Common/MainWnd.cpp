@@ -111,7 +111,7 @@ int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	pWinConfig->ShowWindow(SW_HIDE);
 	pWinConfig->UpdateWindow();
 
-	pWinHelp = new WinHelpAbout(*this);
+	pWinHelp = new WinHelpAbout(*this, svLex.svtextHelp.pString);
 	pWinHelp->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Select"), (WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd , NULL, 0);
 	pWinHelp->ShowWindow(SW_HIDE);
 	pWinHelp->UpdateWindow();
@@ -193,7 +193,7 @@ void MainWnd::StartSelect() { pWinConfig->ShowWindow(SW_SHOW); }
 
 void MainWnd::StartHelp() { pWinHelp->ShowWindow(SW_SHOW); }
 
-void MainWnd::ReturnToMainScreen() { pWinConfig->ShowWindow(SW_HIDE);  pWinStart->ShowWindow(SW_SHOW); }
+void MainWnd::ReturnToMainScreen() { pWinConfig->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_HIDE);  pWinStart->ShowWindow(SW_SHOW); }
 
 void MainWnd::PopulateTiles(U8 *letters)
 {
@@ -371,15 +371,15 @@ void MainWnd::LoadSkinDefaults() {
 	svLex.svimgHelp.pBytes = LocateResource(IDB_HELP, TEXT("PNG"), &svLex.svimgHelp.cb);
 	svLex.svimgHelp.rect = CRect(0, 0, 348, 464);
 
-	svLex.svrectHelpBox.rect = CRect(28, 158, 312, 440);
+	svLex.svrectHelpBox.rect = CRect(28, 100, 322, 410);
 
 	svLex.svimgHelpOk.pBytes = LocateResource(IDB_HELP_OK, TEXT("PNG"), &svLex.svimgHelpOk.cb);
-	svLex.svimgHelpOk.rect = CRect(0, 0, 84, 28);
+	svLex.svimgHelpOk.rect = CRect(0, 0, 126, 42);
 	svLex.svrectHelpOk.rect = CRect(CPoint(10, 416), svLex.svimgHelpOk.rect.Size());
 	svLex.svrectHelpOkTouch.rect = CRect(10, 290, 90, 310);
 
 	svLex.svimgHelpAbout.pBytes = LocateResource(IDB_HELP_ABOUT, TEXT("PNG"), &svLex.svimgHelpAbout.cb);
-	svLex.svimgHelpAbout.rect = CRect(0, 0, 84, 28);
+	svLex.svimgHelpAbout.rect = CRect(0, 0, 126, 42);
 	svLex.svrectHelpAbout.rect = CRect(CPoint(216, 416), svLex.svimgHelpAbout.rect.Size());
 	svLex.svrectHelpAboutTouch.rect = CRect(150, 290, 230, 310);
 

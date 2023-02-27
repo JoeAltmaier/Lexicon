@@ -106,6 +106,8 @@ IDB_HELP_OK             PNG                     "HelpOK.png"
 
 IDB_HELP_ABOUT          PNG                     "HelpAbout.png"
 
+IDB_BONUSLEVEL          PNG                     "LevelBonus.png"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

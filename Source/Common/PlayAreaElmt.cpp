@@ -51,12 +51,16 @@ ERC PlayAreaElmt::OnCreate(SCreateStruct &_cs)
     if (!elmtBtPause.Create(esVISIBLE | SButton::bsPUSHSIMPLE, PLAYPAUSEBUTTON, CRect(CPoint(126, 424), CSize(28, 30)), this))
         return ERR;
 
-    if (!elmtBtMute.Create(esHIDDEN | SButton::bsPUSHSIMPLE, PLAYMUTEBUTTON, CRect(CPoint(155, 424), CSize(31, 28)), this))
+    if (!elmtBtMute.Create(esVISIBLE | SButton::bsPUSHSIMPLE, PLAYMUTEBUTTON, CRect(CPoint(155, 424), CSize(31, 28)), this))
         return ERR;
 
     if (!elmtPauseLegend.Create(esVISIBLE, PLAYPAUSELEGENDBUTTON, 2, CPoint(135, 150), this))
         return ERR;
     elmtPauseLegend.SetItem(!elmtTileGrid.IsPauseGame());
+
+    if (!elmtLevelBonus.Create(esVISIBLE, PLAYLEVELBONUSBUTTON, 2, CPoint(135, 150), this))
+        return ERR;
+    elmtLevelBonus.SetItem(1); // blank
 
     TColor transColor(255, 255, 255);
     font.LoadPngFile("DigitsFontStrip.png", "E:\\IowaSoftwareDesign\\Lexicon\\Source\\Common\\Resource\\", 1, transColor);
