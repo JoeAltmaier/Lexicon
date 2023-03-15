@@ -77,6 +77,7 @@ public:
 	void Blank(const Coord &cd);
 
 	void Match();
+	void ReRack();
 
 	Coord Size() { return size; }
 

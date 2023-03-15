@@ -112,7 +112,7 @@ int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	pWinConfig->UpdateWindow();
 
 	pWinHelp = new WinHelpAbout(*this, svLex.svtextHelp.pString);
-	pWinHelp->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Select"), (WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd , NULL, 0);
+	pWinHelp->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Help"), (WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd , NULL, 0);
 	pWinHelp->ShowWindow(SW_HIDE);
 	pWinHelp->UpdateWindow();
 
@@ -165,7 +165,7 @@ ERC MainWnd::OnElmtNotify(SElement* _pElmt, UINT _nCode, WPARAM _wParam, LPARAM 
 		break;
 
 	case notifyIDLE:
-		elmtPlay.AnimationIdle();
+		pBoard->Event(ETilesBurned, NULL);
 		break;
 
 	case notifySTILL:
@@ -189,11 +189,13 @@ void MainWnd::About()
 
 void MainWnd::StartGame() { pWinStart->ShowWindow(SW_HIDE);  pBoard->Event(ENew, NULL); }
 
-void MainWnd::StartSelect() { pWinConfig->ShowWindow(SW_SHOW); }
+void MainWnd::GameOver(U32 score) { pWinStart->UpdateLeaderboards(score); }
 
-void MainWnd::StartHelp() { pWinHelp->ShowWindow(SW_SHOW); }
+void MainWnd::StartSelect() { pWinStart->ShowWindow(SW_HIDE); pWinConfig->ShowWindow(SW_SHOW); pWinConfig->Invalidate(); }
 
-void MainWnd::ReturnToMainScreen() { pWinConfig->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_HIDE);  pWinStart->ShowWindow(SW_SHOW); }
+void MainWnd::StartHelp() { pWinStart->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_SHOW); pWinHelp->Invalidate();  }
+
+void MainWnd::ReturnToMainScreen() { pWinConfig->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_HIDE); pWinStart->ShowWindow(SW_SHOW); pWinStart->Invalidate(); }
 
 void MainWnd::PopulateTiles(U8 *letters)
 {
@@ -245,6 +247,12 @@ void MainWnd::StartAnimation(const Coord& cd)
 {
 	// A letter is burned. 
 	elmtPlay.StartAnimation(cd);
+}
+
+void MainWnd::StartAnimation(const Coord& cdAt, const Coord& cdTo)
+{
+	// A letter is falling. 
+	elmtPlay.StartAnimation(cdAt, cdTo);
 }
 
 void MainWnd::InitializeDictionary() {
@@ -371,7 +379,7 @@ void MainWnd::LoadSkinDefaults() {
 	svLex.svimgHelp.pBytes = LocateResource(IDB_HELP, TEXT("PNG"), &svLex.svimgHelp.cb);
 	svLex.svimgHelp.rect = CRect(0, 0, 348, 464);
 
-	svLex.svrectHelpBox.rect = CRect(28, 100, 322, 410);
+	svLex.svrectHelpBox.rect = CRect(24, 116, 323, 402);
 
 	svLex.svimgHelpOk.pBytes = LocateResource(IDB_HELP_OK, TEXT("PNG"), &svLex.svimgHelpOk.cb);
 	svLex.svimgHelpOk.rect = CRect(0, 0, 126, 42);
@@ -389,8 +397,8 @@ void MainWnd::LoadSkinDefaults() {
 	svLex.svimgSelect.pBytes = LocateResource(IDB_SELECT, TEXT("PNG"), &svLex.svimgSelect.cb);
 	svLex.svimgSelect.rect = CRect(0, 0, 348, 464);
 
-	svLex.svrectSkinsBox.rect = CRect(14, 80, 226, 162);
-	svLex.svrectDictsBox.rect = CRect(14, 197, 226, 279);
+	svLex.svrectSkinsBox.rect = CRect(14, 120, 326, 251);
+	svLex.svrectDictsBox.rect = CRect(14, 290, 326, 424);
 
 	svLex.svimgSelectOk.pBytes = LocateResource(IDB_SELECT_OK, TEXT("PNG"), &svLex.svimgSelectOk.cb);
 	svLex.svimgSelectOk.rect = CRect(0, 0, 126, 42);
@@ -406,8 +414,8 @@ void MainWnd::LoadSkinDefaults() {
 	svLex.svimgMain.pBytes = LocateResource(IDB_MAINBACKGROUND, TEXT("PNG"), &svLex.svimgMain.cb);
 	svLex.svimgMain.rect = CRect(0, 0, 348, 464);
 
-	svLex.svrectHighScoresBox.rect = CRect(14, 79, 226, 161);
-	svLex.svrectGameModeBox.rect = CRect(14, 128, 226, 251);
+	svLex.svrectHighScoresBox.rect = CRect(28, 120, 324, 230);
+	svLex.svrectGameModeBox.rect = CRect(14, 294, 324, 360);
 
 	svLex.svimgMainPlay.pBytes = LocateResource(IDB_MAIN_PLAY, TEXT("PNG"), &svLex.svimgMainPlay.cb);
 	svLex.svimgMainPlay.rect = CRect(0, 0, 126, 42);

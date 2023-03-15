@@ -103,7 +103,7 @@ void Lexicon::LevelEnd(bool _bQuit) {
 				Blank(cd);
 			}
 
-	if (true)//(bAllBlank)
+	if (bAllBlank)
 	{
 		cLevelsConsecutive++;
 
@@ -122,6 +122,8 @@ void Lexicon::LevelEnd(bool _bQuit) {
 	}
 	else
 		cLevelsConsecutive = 0;
+
+	Event(EGameOver);
 }
 
 void Lexicon::ChooseBonusWord() {
@@ -312,6 +314,18 @@ void Lexicon::Match() {
 
 	ClearMatch();
 
+	// Credit clock for matching
+	if (cValueTotal)
+		Event(ELettersUsed, (void*)cValueTotal);
+
+	// Choose new bonus word
+	if (bBonusUsed)
+		Event(EBonusUsed);
+}
+
+void Lexicon::ReRack() {
+	Coord cd;
+
 	// Rack up letters
 	for (cd.x = 0; cd.x < size.x; cd.x++)
 	{
@@ -322,24 +336,59 @@ void Lexicon::Match() {
 				if (yBlank == -1)
 					yBlank = cd.y;
 			}
-			else 
+			else
 				if (yBlank != -1)
 				{
 					// Move letter to yBlank
-					Letter(Coord(cd.x, yBlank)) = Letter(cd);
+					Coord cdTo(cd.x, yBlank);
+					Letter(cdTo) = Letter(cd);
 					Blank(cd);
+					// Move tile
+					Event(EMoveTile, new MoveTile(cd, cdTo));
 					yBlank--;
 				}
 	}
-
-	// Credit clock for matching
-	if (cValueTotal)
-		Event(ELettersUsed, (void*)cValueTotal);
-
-	// Choose new bonus word
-	if (bBonusUsed)
-		Event(EBonusUsed, NULL);
 }
+
+#if 0
+void TileGridElmt::AnimationIdle()
+{
+	// All burning has ceased. Time to drop tiles to squash gaps
+
+	int xTile = nMARGINLEFT;
+
+	// Search from bottom up for blanks
+	for (int iCol = 0; iCol < cCol; iCol++) {
+		int yTile = nMARGINTOP + cRow * rectTile.Height();
+		int yTarget = -1;
+		for (int iRow = cRow - 1; iRow >= 0; iRow--) {
+			yTile -= rectTile.Height();
+
+			TileElmt* pElmtTile;
+			if ((pElmtTile = TileAt(CPoint(xTile, yTile))) == 0)
+			{
+				// Empty space. Fill it if it's the bottom (first) one
+				if (yTarget == -1)
+					yTarget = yTile;
+			}
+			else
+			{
+				if (yTarget >= 0) // if a blank exists below this tile
+				{
+					SlideTileElmt(pElmtTile, CPoint(xTile, yTarget));
+					yTarget -= rectTile.Height();
+				}
+			}
+		}
+
+		xTile += rectTile.Width();
+	}
+
+	return;
+}
+#endif
+
+
 
 	// Multiply by bonus letter multiplier
 	// If more than one bonus letter present, take total multiplier - (nBonusLetter-1)

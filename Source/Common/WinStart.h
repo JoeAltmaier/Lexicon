@@ -13,18 +13,20 @@
 
 #include "MainWnd.h"
 #include "SListBox.h"
+#include "Leaderboard.h"
 
 #define MAINPLAYBUTTON      "IDB_MAINBACKGROUND"
 #define MAINEXITBUTTON      "IDB_MAIN_EXIT"
 #define MAINHELPBUTTON      "IDI_MAIN_HELP"
 #define MAINCONFIGBUTTON      "IDI_MAIN_CONFIG"
 
-class WinStart : public SWnd {
+class WinStart : public SWnd, public LeaderboardCallback {
 public:
 	WinStart(MainWnd&);
 	~WinStart();
 
 	int  OnCreate(LPCREATESTRUCT lpCreateStruct);
+	void UpdateLeaderboards(int score) { leaderboard.UpdateLeaderboards(score); }
 
 private:
 	void Done();
@@ -32,8 +34,10 @@ private:
 
 	virtual BOOL OnElmtButtonNotify(SButtonControl* _pElmt, int _tEvent, CPoint _ptClick) override;
 	virtual BOOL OnElmtListBox(SListBox* _pElmt, int _nNotification) override;
+	virtual BOOL OnElmtLButtonDown(UINT _nFlags, CPoint _point) override;
 	virtual VOID OnBlend(TBitmap& _bmCanvas, const CRect& _rcElmt, const CRect& _rcClip) override;
-
+	virtual BOOL OnTextboxNotify(STextboxControl* _pElmt, int _nCode, CPoint _ptClick) ;
+	void OnLeaderboardCallback(std::string&)  override;
 private:
 	MainWnd& winBoard;
 
@@ -50,6 +54,7 @@ private:
 	MskButton elmtBtConfig;
 	MskButton elmtBtHelp;
 	STextbox elmtScores;
+	Leaderboard leaderboard;
 
 protected:
 	DECLARE_MESSAGE_MAP()

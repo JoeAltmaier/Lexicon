@@ -50,6 +50,17 @@ void Board::Event(EventType evt, void *id) {
 		{
 		SwapTiles* swap = (SwapTiles*)id;
 		Swap(swap->tileA, swap->tileB, config.IsShuffle());
+
+		delete (SwapTiles*)id;
+		}
+		break;
+
+	case EMoveTile:
+		{
+		MoveTile* move = (MoveTile*)id;
+		winBoard.StartAnimation(move->cdAt, move->cdTo);
+
+		delete (MoveTile*)id;
 		}
 		break;
 
@@ -60,6 +71,10 @@ void Board::Event(EventType evt, void *id) {
 	case ETileDropped:
 		// Calculate words formed, burn letters
 		Match();
+		break;
+
+	case ETilesBurned:
+		ReRack();
 		break;
 
 	case ELettersUsed:
@@ -115,6 +130,9 @@ void Board::Event(EventType evt, void *id) {
 		FillBoard();
 		break;
 
+	case EGameOver:
+		winBoard.GameOver(GetScore());
+		break;
 	}
 
 }

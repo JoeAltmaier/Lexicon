@@ -189,6 +189,12 @@ void TileGridElmt::StartAnimation(const Coord& cd)
 	if (pElmtTile) BurnTileElmt(pElmtTile, nFrameBurn);
 }
 
+void TileGridElmt::StartAnimation(const Coord& cdAt, const Coord& cdTo)
+{
+	TileElmt* pElmtTile = TileAt(CPoint(cdAt.x * sizeTile.cx, cdAt.y * sizeTile.cy));
+	SlideTileElmt(pElmtTile, CPoint(cdTo.x * sizeTile.cx, cdTo.y * sizeTile.cy));
+}
+
 TileElmt* TileGridElmt::TileAt(CPoint _pt)
 {
 	// Search apChain at row containing _pt.y for tile near _pt.x
@@ -394,42 +400,6 @@ void TileGridElmt::OnTimerBurn(Timer* _pTimer)
 		NotifyParent(notifyIDLE, 0); // This will come back to us as a call to AnimationIdle
 	else
 		timerBurn.Start(TICKBURN);
-}
-
-void TileGridElmt::AnimationIdle()
-{
-	// All burning has ceased. Time to drop tiles to squash gaps
-
-	int xTile = nMARGINLEFT;
-
-	// Search from bottom up for blanks
-	for (int iCol = 0; iCol < cCol; iCol++) {
-		int yTile = nMARGINTOP + cRow * rectTile.Height();
-		int yTarget = -1;
-		for (int iRow = cRow - 1; iRow >= 0; iRow--) {
-			yTile -= rectTile.Height();
-
-			TileElmt* pElmtTile;
-			if ((pElmtTile = TileAt(CPoint(xTile, yTile))) == 0)
-			{
-				// Empty space. Fill it if it's the bottom (first) one
-				if (yTarget == -1)
-					yTarget = yTile;
-			}
-			else
-			{
-				if (yTarget >= 0) // if a blank exists below this tile
-				{
-					SlideTileElmt(pElmtTile, CPoint(xTile, yTarget));
-					yTarget -= rectTile.Height();
-				}
-			}
-		}
-
-		xTile += rectTile.Width();
-	}
-
-	return;
 }
 
 void TileGridElmt::LoseAnimation() {

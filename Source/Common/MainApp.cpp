@@ -16,6 +16,8 @@
 **/
 
 #include "AppAfx.h"
+#include "steam/steam_api.h"
+#define atoll _atoi64
 
 #include "ATimerService.h"
 
@@ -37,6 +39,37 @@ BEGIN_MESSAGE_MAP(MainApp, TWinApp)
 //	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 END_MESSAGE_MAP()
 
+
+
+#if 0
+Steamworks_SelfCheck();
+
+// optional Steam input-device API
+if (!SteamInput()->Init(false))
+{
+	... exit ...
+}
+
+#endif
+
+extern "C" void __cdecl SteamAPIDebugTextHook(int nSeverity, const char* pchDebugText)
+{
+	// if you're running in the debugger, only warnings (nSeverity >= 1) will be sent
+	// if you add -debug_steamapi to the command-line, a lot of extra informational messages will also be sent
+	::OutputDebugString(pchDebugText);
+
+	if (nSeverity >= 1)
+	{
+		// place to set a breakpoint for catching API errors
+		int x = 3;
+		(void)x;
+	}
+}
+
+void MainApp::OnTimerSteam(Timer*)
+{
+	SteamGameServer_RunCallbacks();
+}
 
 
 // The one and only MainApp object
@@ -104,6 +137,25 @@ BOOL MainApp::InitInstance()
 	}
 #endif
 
+	// Steam initialization
+	if (SteamAPI_RestartAppIfNecessary(k_uAppIdInvalid))
+	{
+		return FALSE;
+	}
+
+	if (!SteamAPI_Init())
+	{
+		return FALSE;
+	}
+
+	SteamClient()->SetWarningMessageHook(&SteamAPIDebugTextHook);
+
+	if (!SteamUser()->BLoggedOn())
+	{
+		return FALSE;
+	}
+
+
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
 	// of your final executable, you should remove from the following
@@ -150,6 +202,8 @@ int  MainApp::ExitInstance()
 	Registry::SaveSettings();
 
 	delete pChildWnd;
+
+	SteamAPI_Shutdown();
 
 	return TWinApp::ExitInstance();
 }

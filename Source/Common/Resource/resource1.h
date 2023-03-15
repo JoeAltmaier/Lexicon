@@ -21,6 +21,7 @@
 #define IDB_HELP_ABOUT                  173
 #define IDB_HELP_OK                     174
 #define IDT_HELP                        175
+#define IDT_ABOUT                        176
 #define IDW_SPIRAL                      200
 #define IDW_DRUMROLL                    201
 #define IDI_BACKGROUND                  212

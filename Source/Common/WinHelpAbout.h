@@ -12,7 +12,8 @@
 #define _WinHelpAbout_h
 
 #include "MainWnd.h"
-#include "STextBox.h"
+#include "SEditBox.h"
+#include "SControl.h"
 
 #define HELPBACKGROUNDBUTTON      "IDB_HELP"
 #define HELPOKBUTTON              "IDB_HELP_OK"
@@ -26,9 +27,6 @@ public:
 	int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 
 private:
-	void Done();
-	void Process();
-
 	virtual BOOL OnElmtButtonNotify(SButtonControl* _pElmt, int _tEvent, CPoint _ptClick) override;
 	virtual VOID OnBlend(TBitmap& _bmCanvas, const CRect& _rcElmt, const CRect& _rcClip) override;
 
@@ -36,7 +34,9 @@ private:
 	MainWnd& winBoard;
 
 	const char* text;
-	STextbox helpText;
+	SEditBox helpText;
+
+	char* about;
 
 	SFont font;
 	U32 fontHeight;

@@ -75,6 +75,7 @@ public:
 	bool IsPauseGame()				{ return bPause; }
 	void FloatScore(const Coord& cd, S32 score);
 	void StartAnimation(const Coord& cd);
+	void StartAnimation(const Coord& cdAt, const Coord& cdTo);
 	void AnimationIdle();
 
 private:

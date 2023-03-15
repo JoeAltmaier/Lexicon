@@ -15,7 +15,7 @@ typedef uint16_t U16;
 typedef int32_t S32;
 typedef uint32_t U32;
 
-typedef enum { ENextLevel, ELetterNew, ELetterUsed, ELettersUsed, EQuit, ENew, EPause, EMute, ETileDropped, ESwap, EStill, EScore, EScoreUpdate, EBonusWord, EBonusUsed, EBestWord, EBoardExhausted, EBoardImpossible, EWinComplete, EMainWindow, ELevelBonus
+typedef enum { ENextLevel, ELetterNew, ELetterUsed, ELettersUsed, EQuit, ENew, EPause, EMute, EMoveTile, ETileDropped, ESwap, EStill, ETilesBurned, EScore, EScoreUpdate, EBonusWord, EBonusUsed, EBestWord, EBoardExhausted, EBoardImpossible, EWinComplete, EMainWindow, ELevelBonus, EGameOver
 } EventType;
 
 typedef enum { NLeft, NRight, NTop, NBottom, NNot } NeighborType;
@@ -54,6 +54,12 @@ typedef struct SwapTiles {
 	Coord tileB;
 	SwapTiles(Coord& a, Coord& b) :tileA(a), tileB(b) {}
 } SwapTiles;
+
+typedef struct MoveTile {
+	Coord cdAt;
+	Coord cdTo;
+	MoveTile(Coord& _cdAt, Coord& _cdTo) : cdAt(_cdAt), cdTo(_cdTo) {}
+} MoveTile;
 
 #endif
 

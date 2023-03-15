@@ -76,8 +76,5 @@ void TileElmt::OnDestroy()
 //
 void TileElmt::OnBlend(TBitmap &_bmCanvas,const CRect &_rcElmt,const CRect &_rcClip)
 {
-//	if (Burner::IsBurnerEnabled())
 		Burner::Blend(_bmCanvas, *pBmDissolve, rcBmTile, _rcElmt, _rcClip);
-//	else
-		//_bmCanvas.BlendFrom(*pBmTiles, rcBmTile, _rcElmt, _rcClip);
 }

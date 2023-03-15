@@ -19,8 +19,12 @@ BEGIN_MESSAGE_MAP(WinStart, SWnd)
 	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
+
+char* leaderboards[] = { "Best Board", NULL };
+
+
 WinStart::WinStart(MainWnd& _winBoard)
-	: winBoard(_winBoard)
+	: winBoard(_winBoard), leaderboard(leaderboards, this, &LeaderboardCallback::OnLeaderboardCallback)
 {
 }
 
@@ -42,12 +46,12 @@ int  WinStart::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	logfont.lfWeight = FW_BOLD;
 
 	font.LoadLogFont(&logfont, svLex.svrgbTransparent.color);
-	selectGame.Create(0, &font, TColor(0), svLex.svrgbTransparent.color, SElement::esVISIBLE, svLex.svrectGameModeBox.rect, this, 0);
+	selectGame.Create(0, &font, TColor(0), TColor(0xFF, 0, 0xFF), SElement::esVISIBLE, svLex.svrectGameModeBox.rect, this, 0);
 
-	selectGame.AddString(TEXT("Shuffle"));
-	selectGame.AddString(TEXT("Shuffle-Clocked"));
 	selectGame.AddString(TEXT("Crash"));
 	selectGame.SetSel(winBoard.config.IsShuffle() ? (winBoard.config.IsClocked() ? 1 : 0) : 2, true);
+
+	elmtScores.Create(SElement::esVISIBLE, &font, TColor(0), svLex.svrectHighScoresBox.rect, this);
 
 	bmBackground.Create(svLex.svimgBackground.rect.Size(), 0);
 	bmBackground.LoadDataImage((const char*)svLex.svimgMain.pBytes, svLex.svimgMain.cb);
@@ -61,6 +65,7 @@ int  WinStart::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (!elmtBtHelp.Create(SElement::esVISIBLE | SButton::bsPUSHSIMPLE, (const char*)svLex.svimgMainHelp.pBytes, (int)svLex.svimgMainHelp.cb, svLex.svrectMainHelp.rect, this, IDB_MAIN_HELP))
 		return ERR;
 
+	leaderboard.Start();
 
 	return 0;
 }
@@ -95,6 +100,14 @@ BOOL WinStart::OnElmtButtonNotify(SButtonControl* _pElmt, int _tEvent, CPoint _p
 	return false;
 }
 
+BOOL WinStart::OnElmtLButtonDown(UINT _nFlags, CPoint _point)
+{
+	if (elmtScores.GetRect().PtInRect(_point))
+		leaderboard.Rotate();
+
+	return SWnd::OnElmtLButtonDown(_nFlags, _point);
+}
+
 void WinStart::Process() {
 	winBoard.config.SetClocked(false);
 
@@ -122,10 +135,17 @@ BOOL WinStart::OnElmtListBox(SListBox* _pElmt, int _nNotification)
 	return FALSE;
 }
 
+BOOL WinStart::OnTextboxNotify(STextboxControl* _pElmt, int _nCode, CPoint _ptClick) 
+{
+	return FALSE;
+}
+
+void WinStart::OnLeaderboardCallback(std::string& text)
+{
+	elmtScores.SetText(text.c_str());
+}
 
 VOID WinStart::OnBlend(TBitmap& _bmCanvas, const CRect& _rcElmt, const CRect& _rcClip)
 {
 	_bmCanvas.CopyFrom(bmBackground, svLex.svimgBackground.rect, svLex.svimgBackground.rect, svLex.svimgBackground.rect, 0, 0);
-
-	SWnd::OnBlend(_bmCanvas, _rcElmt, _rcClip);
 }

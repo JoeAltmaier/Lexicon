@@ -13,6 +13,8 @@
 #include "Resource1.h"
 #include "LexSkins.h"
 
+void* LocateResource(_In_     int id, _In_     LPCSTR lpType, _Out_ UINT32* size);
+
 
 BEGIN_MESSAGE_MAP(WinHelpAbout, SWnd)
 	ON_WM_CREATE()
@@ -20,8 +22,11 @@ BEGIN_MESSAGE_MAP(WinHelpAbout, SWnd)
 END_MESSAGE_MAP()
 
 WinHelpAbout::WinHelpAbout(MainWnd& _winBoard, const char *_text)
-	: winBoard(_winBoard), text(_text)
+	: winBoard(_winBoard), text(_text), about("---")
 {
+	UINT32 cb;
+	about = (char*)LocateResource(IDT_ABOUT, TEXT("TEXT"), &cb);
+
 }
 
 
@@ -41,12 +46,14 @@ int  WinHelpAbout::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	logfont.lfHeight = 20;
 	logfont.lfWeight = FW_BOLD;
 
-	font.LoadLogFont(&logfont, svLex.svrgbTransparent.color);
-	helpText.Create(0, &font, TColor(0), svLex.svrectHelpBox.rect, this, 0);
-
+	font.LoadLogFont(&logfont, 0);
+	
+	helpText.Create(SElement::esVISIBLE | SEditboxControl::esAUTOVSCROLL | SEditboxControl::esMULTILINE, svLex.svrectHelpBox.rect, this);
 	helpText.SetText(text);
+	helpText.SetFont(&font);
 	helpText.MoveOrderTop();
-
+	helpText.SetReadOnly();
+	
 	bmBackground.Create(svLex.svimgHelp.rect.Size(), 0);
 	bmBackground.LoadDataImage((const char*)svLex.svimgHelp.pBytes, svLex.svimgHelp.cb);
 
@@ -62,27 +69,28 @@ BOOL WinHelpAbout::OnElmtButtonNotify(SButtonControl* _pElmt, int _tEvent, CPoin
 {
 	switch (_pElmt->GetId()) {
 	case IDB_HELP_OK:
+		helpText.SetText(text);
 		winBoard.ReturnToMainScreen();
 		break;
 
 	case IDB_HELP_ABOUT:
-		SetCursor(LoadCursor(NULL, IDC_WAIT));
-//		winBoard.ReturnToMainScreen();
-		SetCursor(LoadCursor(NULL, IDC_ARROW));
-
+		helpText.SetText(about);
 		return true;
 	}
 
 	return false;
 }
 
-void WinHelpAbout::Process() {
-
-}
-
 VOID WinHelpAbout::OnBlend(TBitmap& _bmCanvas, const CRect& _rcElmt, const CRect& _rcClip)
 {
 	_bmCanvas.CopyFrom(bmBackground, svLex.svimgHelp.rect, svLex.svimgHelp.rect, svLex.svimgHelp.rect, 0, 0);
+}
 
-	SWnd::OnBlend(_bmCanvas, _rcElmt, _rcClip);
+
+
+void* LocateResource(_In_     int id, _In_     LPCSTR lpType, _Out_ UINT32* size)
+{
+	HRSRC hr = FindResource(NULL, MAKEINTRESOURCE(id), lpType);
+	*size = SizeofResource(NULL, hr);
+	return LoadResource(NULL, hr);
 }

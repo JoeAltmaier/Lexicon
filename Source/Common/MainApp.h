@@ -23,22 +23,28 @@
 
 #include "AppDefs.h"
 #include "TWinApp.h"
+#include "TTimer_T.h"
 
 // MainApp:
 //
 #define APPWNDCLASS		APPNAME
 
 class MainApp : public TWinApp {
+	typedef TTimerCallbackMethod_T<MainApp> Timer;
 public:
-	MainApp() { }
+	MainApp(): timerSteam(this, &MainApp::OnTimerSteam) { }
 
 public:
 	CWnd *pChildWnd;
+	Timer timerSteam;
 
 // Overrides
 public:
 	virtual BOOL InitInstance();
 	int  ExitInstance();
+
+private:
+	void OnTimerSteam(Timer*);
 
 public:
 	DECLARE_MESSAGE_MAP()

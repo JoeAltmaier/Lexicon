@@ -39,9 +39,9 @@ class WinHelpAbout;
 
 class MainWnd : public SWnd {
 public:
-	MainWnd(): config(HKEY_CURRENT_USER, TEXT("Software\\Iowa Software Design\\Lexicon")), pSkinLoader(NULL) { }// : hCurSave(NULL) { } 
+	MainWnd(): config(HKEY_CURRENT_USER, TEXT("Software\\Iowa Software Design\\Lexicon")), pSkinLoader(NULL) { }
 
-	virtual ~MainWnd() { } //DestroyWindow(); }
+	virtual ~MainWnd() { }
 
 public:
 	void About();
@@ -53,8 +53,10 @@ public:
 	void SetBestWord(const U8* _pBestWord);
 	void AddAnimation(const Coord& cd) {}
 	void StartAnimation(const Coord& cd);
+	void StartAnimation(const Coord& ctAt, const Coord& ctTo);
 	void LevelBonus(U32 bOn) { elmtPlay.LevelBonus(bOn); }
 	void StartGame();
+	void GameOver(U32 score);
 	void ReturnToMainScreen();
 	void Exit() { exit(0); }
 	void StartSelect();

@@ -232,6 +232,7 @@ IDI_TILE                IMAGE                   "PlayTiles.gif"
 //
 
 IDT_HELP                TEXT                    "Help.txt"
+IDT_ABOUT               TEXT                    "About.txt"
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
