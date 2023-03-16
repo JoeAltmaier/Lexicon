@@ -28,7 +28,7 @@
 #include "AppDefs.h"
 #include "SysMenu.h"
 #include "AppSkin.h"
-#include "STextBox.h"
+#include "SFontBox.h"
 #include "ACircularList_T.h"
 
 #include "TileGridElmt.h"
@@ -92,9 +92,10 @@ private:
 	MskResDecal elmtPauseLegend;
 	MskResDecal elmtLevelBonus;
 	SFont font;
-	STextbox elmtBonusWord;
-	STextbox elmtBestWord;
-	STextbox elmtScore;
+	TBitmap bmFontStrip;
+	SFontBox elmtBonusWord;
+	SFontBox elmtBestWord;
+	SFontBox elmtScore;
 	Coord cdCenter;
 };
 

@@ -25,6 +25,7 @@
 #include "SWnd.h"
 #include "resource1.h"
 #include "Random.h"
+//#include "LexSkins.h"
 
 // 50ms is 20 fps, 33ms is ~30 fps, 20ms is 50 fps , 16.7ms is ~60 fps
 #define TICKSLIDE	30
@@ -53,19 +54,21 @@ ERC TileGridElmt::OnCreate(SCreateStruct &_cs)
 
 	// Assumes bitmap is a horizontal strip of Rowed Tiles in square rectangles
 	// so height of bitmap is also the width of each Tile in the strip.
-	if ((erc = bmTiles.LoadPngResource("IDB_TILES")) != OK) {
+//	if ((erc = bmTiles.LoadDataImage((const char *)svLex.svimgTiles.pBytes, svLex.svimgTiles.cb, svLex.svrgbTransparent.color)) != OK) {
+	if ((erc = bmTiles.LoadPngResource(MAKEINTRESOURCE(IDB_TILES))) != OK) {
 		return ERR;
 	}
+
+	// Size of each Tile in horizontal bitmap strip
+	sizeTile = CSize(bmTiles.Height(), bmTiles.Height());
+
 	// There must be at least one full Tile rectangle.
-	if ((cTiles = bmTiles.Width() / bmTiles.Height()) < 1) {
+	if ((cTiles = bmTiles.Width() / sizeTile.cy) < 1) {
 		return ERR;
 	}
 
 	cCol = SplMin(cTiles,MAXCOL);
 	cRow = SplMin(cCol,MAXROW);
-
-	// Size of each Tile in horizontal bitmap strip
-	sizeTile = CSize(bmTiles.Height(), bmTiles.Height());
 
 	if ((erc = floaters.LoadFont("Arial",20)) != OK) {
 		return erc;
@@ -107,13 +110,13 @@ bool TileGridElmt::DropPlayTiles(U8 *letters)
 
 	int xTile = nMARGINLEFT;
 	int yTile = nMARGINTOP;
-	int nLastRow = yTile + cRow * bmTiles.Height();
+	int nLastRow = yTile + cRow * sizeTile.cy;
 
 	// Place one initial Tile in each Row chain
 	for (int iRow = 0; iRow < cRow; iRow++) {
 		for (int iCol = 0; iCol < cCol; iCol++) {
 			int iTile = letters[iRow * cCol + iCol];
-			if ((pElmtTile = apChain.ForgeTileElmt(esVISIBLE | esNOPARENTCLIP, iTile - 'a', CPoint(xTile, (yTile - nLastRow - iCol * bmTiles.Height())))) == nullptr)
+			if ((pElmtTile = apChain.ForgeTileElmt(esVISIBLE | esNOPARENTCLIP, iTile - 'a', CPoint(xTile, (yTile - nLastRow - iCol * sizeTile.cy)))) == nullptr)
 				return FALSE;
 
 			SlideTileElmt(pElmtTile,CPoint(xTile,yTile),(iRow == cRow-1));
@@ -136,8 +139,8 @@ bool TileGridElmt::DropGameOver()
 	char aiTiles[] = { 'G','A','M','E','O','V','E','R',0 };
 	int cLines = 2;
 
-	int nWidth = bmTiles.Height(); // width of one tile, square (not width of entire tile filmstrip)
-	int nHeight = bmTiles.Height();
+	int nWidth = sizeTile.cx; // width of one tile, square (not width of entire tile filmstrip)
+	int nHeight = sizeTile.cy;
 
 	TileElmt *pElmtTile;
 	
@@ -339,11 +342,11 @@ void TileGridElmt::PrepareDefaultDissolve()
 	// nFrameBurn is now many frames of dissolve to create
 	// Return a bitmap of tile rows, one tile per letter per dissolve
 
-	nFrameBurn = 20;
+	nFrameBurn = 11;
 
 	// Start dissolve with tile image in first row
-	bmDissolve.Create(bmTiles.Width(), bmTiles.Height() * nFrameBurn, TColor(0, 0, 255));
-	CRect rectTiles(0, 0, bmTiles.Width(), bmTiles.Height());
+	bmDissolve.Create(bmTiles.Width(), sizeTile.cy * nFrameBurn, TColor(0, 0, 255));
+	CRect rectTiles(0, 0, bmTiles.Width(), sizeTile.cy);
 	bmDissolve.CopyFrom(bmTiles, rectTiles, rectTiles, rectTiles, 0, 0);
 
 	// Loop over rows of tile masks

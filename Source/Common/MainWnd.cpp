@@ -443,7 +443,7 @@ void MainWnd::LoadSkinDefaults() {
 
 	svLex.svrectBoard.rect = CRect(BORDERWIDTH, BORDERHEIGHT, 232, 232);
 
-	svLex.svimgTiles.pBytes = LocateResource(IDI_TILE, TEXT("IMAGE"), &svLex.svimgTiles.cb);
+	svLex.svimgTiles.pBytes = LocateResource(IDB_TILES, TEXT("PNG"), &svLex.svimgTiles.cb);
 	svLex.svimgTiles.rect = CRect(0, 0, 728, 308);
 
 	svLex.svrectTilesInBoard.rect = CRect(0, 0, WIDTHINTILES, HEIGHTINTILES);
@@ -479,8 +479,8 @@ void MainWnd::LoadSkinDefaults() {
 	svLex.svrectPauseLegendTouch.rect = CRect(0, 0, 0, 0);
 
 	svLex.svrectClock.rect = CRect(CLOCKLEFT, CLOCKTOP, CLOCKRIGHT, CLOCKBOTTOM);
-	svLex.svimgClock.pBytes = LocateResource(IDI_CLOCK, TEXT("IMAGE"), &svLex.svimgClock.cb);
-	svLex.svimgClock.rect = CRect(0, 0, 222, 168);
+	svLex.svimgClock.pBytes = LocateResource(IDB_CLOCK, TEXT("PNG"), &svLex.svimgClock.cb);
+	svLex.svimgClock.rect = CRect(0, 0, 333, 252);
 
 	svLex.svrectBonusLevel.rect = CRect(LEVELLEFT, LEVELTOP, LEVELRIGHT, LEVELBOTTOM);
 	svLex.svimgBonusLevel.pBytes = LocateResource(IDI_BONUSLEVEL, TEXT("IMAGE"), &svLex.svimgBonusLevel.cb);
@@ -492,9 +492,9 @@ void MainWnd::LoadSkinDefaults() {
 	svLex.svimgScoreDigits.rect = CRect(0, 0, WIDTHDIGIT * 11, HEIGHTDIGIT);
 	svLex.svtextScoreDigits.pString = "0123456789-";
 
-	svLex.svimgBonusScoreFont.pBytes = LocateResource(IDI_BONUSFONT, TEXT("IMAGE"), &svLex.svimgBonusScoreFont.cb);
+	svLex.svimgBonusScoreFont.pBytes = LocateResource(IDB_BONUSFONT, TEXT("PNG"), &svLex.svimgBonusScoreFont.cb);
 	svLex.svimgBonusScoreFont.rect = CRect(0, 0, 407, 14);
-	svLex.svtextBonusScoreFont.pString = "abcdefghijklmnopqrstuvwxyz0123456789";
+	svLex.svtextBonusScoreFont.pString = "abcdefghijklmnopqrstuvwxyz0123456789-";
 
 	svLex.svwavePick.pBytes = LocateResource(IDW_CLICK, TEXT("WAVE"), &svLex.svwavePick.cb);
 	svLex.svwaveDrop.pBytes = LocateResource(IDW_CLACK, TEXT("WAVE"), &svLex.svwaveDrop.cb);

@@ -108,6 +108,10 @@ IDB_HELP_ABOUT          PNG                     "HelpAbout.png"
 
 IDB_BONUSLEVEL          PNG                     "LevelBonus.png"
 
+IDB_CLOCK               PNG                     "Clock.png"
+
+IDB_BONUSFONT           PNG                     "FontScoreboard.png"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -203,11 +207,7 @@ IDI_HELP_OK             IMAGE                   "HelpOK.jpg"
 
 IDI_HELP_ABOUT          IMAGE                   "HelpAbout.jpg"
 
-IDI_BONUSFONT           IMAGE                   "FontScoreboard.gif"
-
 IDI_BONUSLEVEL          IMAGE                   "LevelBonus.gif"
-
-IDI_CLOCK               IMAGE                   "Clock.gif"
 
 IDI_BACKGROUND          IMAGE                   "PlayBackground.jpg"
 
@@ -222,8 +222,6 @@ IDI_PAUSEBUTTON         IMAGE                   "PlayPause.jpg"
 IDI_PAUSELEGEND         IMAGE                   "PauseLegend.gif"
 
 IDI_QUITBUTTON          IMAGE                   "PlayQuit.jpg"
-
-IDI_TILE                IMAGE                   "PlayTiles.gif"
 
 
 /////////////////////////////////////////////////////////////////////////////

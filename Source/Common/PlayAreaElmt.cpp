@@ -62,17 +62,15 @@ ERC PlayAreaElmt::OnCreate(SCreateStruct &_cs)
         return ERR;
     elmtLevelBonus.SetItem(1); // blank
 
-    TColor transColor(255, 255, 255);
-    font.LoadPngFile("DigitsFontStrip.png", "E:\\IowaSoftwareDesign\\Lexicon\\Source\\Common\\Resource\\", 1, transColor);
-    TColor textColor(255, 0, 0);
-    font.LoadTrueType(20, "Courier", textColor);
-    if (!elmtBonusWord.Create(esVISIBLE, &font, textColor, CRect(BONUSLEFT, BONUSTOP, BONUSRIGHT, BONUSBOTTOM), this))
+    bmFontStrip.LoadPngResource(MAKEINTRESOURCE(IDB_BONUSFONT)); // Only way transparency works for now
+
+    if (!elmtBonusWord.Create(&bmFontStrip, svLex.svtextBonusScoreFont.pString, svLex.svrgbTransparent.color, CRect(BONUSLEFT, BONUSTOP, BONUSRIGHT, BONUSBOTTOM), this))
         return ERR;
 
-    if (!elmtBestWord.Create(esVISIBLE, &font, textColor, CRect(BESTLEFT, BESTTOP, BESTRIGHT, BESTBOTTOM), this))
+    if (!elmtBestWord.Create(&bmFontStrip, svLex.svtextBonusScoreFont.pString, svLex.svrgbTransparent.color, CRect(BESTLEFT, BESTTOP, BESTRIGHT, BESTBOTTOM), this))
         return ERR;
 
-    if (!elmtScore.Create(esVISIBLE, &font, textColor, CRect(SCORELEFT, SCORETOP, SCORERIGHT, SCOREBOTTOM), this))
+    if (!elmtScore.Create(&bmFontStrip, svLex.svtextBonusScoreFont.pString, svLex.svrgbTransparent.color, CRect(SCORELEFT, SCORETOP, SCORERIGHT, SCOREBOTTOM), this))
         return ERR;
 
     return OK;
