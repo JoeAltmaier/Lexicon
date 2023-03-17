@@ -62,7 +62,7 @@ void FloaterElmt::OnDestroy()
 //
 void FloaterElmt::OnBlend(TBitmap &_bmCanvas,const CRect &_rcElmt,const CRect &_rcClip)
 {
-    _bmCanvas.CopyFillColor(0x008000,_rcElmt,_rcClip);
+//    _bmCanvas.CopyFillColor(0x008000,_rcElmt,_rcClip);
     
     BaseClass::OnBlend(_bmCanvas,_rcElmt,_rcClip);
 }

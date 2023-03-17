@@ -27,11 +27,14 @@
 #include "FloaterElmt.h"
 
 #include "ACircularList_T.h"
+#include "resource1.h"
 
 
 class FloaterChain {
 public:
-    FloaterChain(class SElement *_pParentElmt) : pFont(nullptr),pParentElmt(_pParentElmt) { }
+    FloaterChain(class SElement *_pParentElmt) : pParentElmt(_pParentElmt) {
+        bmFontStrip.LoadPngResource(MAKEINTRESOURCE(IDB_BONUSFONT)); // Only way transparency works for now
+    }
     ~FloaterChain()         { ASSERT(listFloater.NextElement() == nullptr); }  // You must call DestroyFloaters() before destructing!
 
     ERC  LoadFont(const char *_pszFontName,int _nFontHeight);
@@ -50,7 +53,7 @@ public:
     FloaterElmt *FirstFloaterElmt() const       { return listFloater.NextElement(); }
 
 private:
-    class SFont *pFont;
+    TBitmap bmFontStrip;
     class SElement *pParentElmt;
 	FloaterElmt::Node listFloater;   // FloaterElmt in this chain
     Slider::Node listSlider;

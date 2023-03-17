@@ -15,24 +15,13 @@
  *
  * Revision History:
  *      5-07-20 TRN  Created
+ *      3-17-23 JCA  Use FontBox
  *
 **/
 
 #include "FloaterChain.h"
 #include "TColorNames.h"
-#include "SFont.h"
-
-ERC FloaterChain::LoadFont(const char *_pszFontName,int _nFontHeight)
-{
-    ERC erc;
-
-    pFont = new SFont;
-    if ((erc = pFont->LoadTrueType(_nFontHeight,_T("Arial"),TColor(PCWhite),OEM_CHARSET,ANSI_CHARSET)) != OK) {
-        delete pFont; 
-        pFont = nullptr;
-    }
-    return erc;
-}
+#include "LexSkins.h"
 
 // .ForgeFloaterElmt
 //
@@ -40,12 +29,9 @@ FloaterElmt *FloaterChain::ForgeFloaterElmt(int _tStyle, CPoint _ptElmt, const c
 {
     FloaterElmt *pFloaterElmt = new FloaterElmt;
 
-    if (pFont == nullptr)
-        return nullptr;     // Font not loaded
-   
-    CSize sizeText = pFont->GetTextExtent(_pszText);
+    SFontBox::Context context(&bmFontStrip, svLex.svtextBonusScoreFont.pString, svLex.svrgbTransparent.color);
 
-    if (!pFloaterElmt->Create(_tStyle | SElement::esNOPARENTCLIP, pFont, PCWhite, CRect(_ptElmt,sizeText), pParentElmt)) {
+    if (pFloaterElmt->Create(_tStyle | SElement::esNOPARENTCLIP, CRect(_ptElmt,CSize(context.pBmFontStrip->Width() / strlen(context.pCharset) * strlen(_pszText), context.pBmFontStrip->Height())), pParentElmt, 0, &context)) {
         delete pFloaterElmt;
         return nullptr;     // Failed to create FloaterElmt
     }

@@ -26,15 +26,14 @@
 #include "AppDefs.h"
 #include "SysMenu.h"
 
-#include "SFont.h"
-#include "STextBox.h"
+#include "SFontBox.h"
 #include "Slider.h"
 
 #include "TBitmap.h"
 #include "ACircularList_T.h"
 
 
-class CLASS_ABASE2(FloaterElmt, public, STextbox, public, Slider)
+class CLASS_ABASE2(FloaterElmt, public, SFontBox, public, Slider)
 public:
 	enum {	// Notifiations to parent element
 		notifyRESET  = 1,

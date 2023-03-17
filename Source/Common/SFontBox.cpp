@@ -44,11 +44,6 @@ void SFontBox::SetText(const char *_pszText)
 	Invalidate();
 }
 
-// .OnSize
-//
-void SFontBox::OnSize(int _cx,int _cy)
-{
-}
 
 // .OnBlend
 //

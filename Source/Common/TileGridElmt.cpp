@@ -70,9 +70,9 @@ ERC TileGridElmt::OnCreate(SCreateStruct &_cs)
 	cCol = SplMin(cTiles,MAXCOL);
 	cRow = SplMin(cCol,MAXROW);
 
-	if ((erc = floaters.LoadFont("Arial",20)) != OK) {
-		return erc;
-	}
+//	if ((erc = floaters.LoadFont("Arial",20)) != OK) {
+//		return erc;
+//	}
 
 	PrepareDefaultDissolve();
 

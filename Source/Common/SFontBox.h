@@ -59,7 +59,6 @@ protected:
 protected://SFC
 	virtual ERC  OnCreate(SCreateStruct& _cs);
 	virtual void OnDestroy() { }
-	virtual void OnSize(int _cx, int _cy);
 	virtual void OnBlend(TBitmap& _bmCanvas, const CRect& _rcArea, const CRect& _rcClip);
 
 protected:
