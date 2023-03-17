@@ -64,12 +64,8 @@ public:
 
 // These aren't referenced yet!
 //	void StopAnimation(Animation&);
-	/*
-	void LoseAnimation();
-	void WinAnimation();
-	void GameOver();
-	void SetTime(U32 _clock);
-	*/
+//	void LoseAnimation();
+//	void WinAnimation();
 
 protected://CWnd
 	int  OnCreate(LPCREATESTRUCT lpCreateStruct);

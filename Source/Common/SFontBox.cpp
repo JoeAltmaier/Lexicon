@@ -20,16 +20,6 @@
 
 #include "SFontBox.h"
 
-// .Create 
-//
-BOOL SFontBox::Create(TBitmap *_pBmFontStrip, const char* _pCharset, TColor _transparent, CRect& _rcElement, SElementRef* _pParent, UINT _nID, void* _pContext)
-{
-	pBmFontStrip = _pBmFontStrip;
-	pCharset = (char*)_pCharset;
-	cPixelPer = pBmFontStrip->Width() / strlen(pCharset);
-
-	return SElement::Create(SElement::esVISIBLE,_rcElement,_pParent,_nID,_pContext) == OK;
-}
 
 // .OnCreate -- Initialize control
 // 
@@ -38,6 +28,9 @@ BOOL SFontBox::Create(TBitmap *_pBmFontStrip, const char* _pCharset, TColor _tra
 //
 ERC SFontBox::OnCreate(SCreateStruct &_cs)
 {
+	context = *(Context*)_cs.pContext;
+	cPixelPer = context.pBmFontStrip->Width() / strlen(context.pCharset);
+
 	return OK;
 }
 
@@ -63,15 +56,15 @@ VOID SFontBox::OnBlend(TBitmap &_bmCanvas,const CRect &_rcWnd,const CRect &_rcCl
 {
 	// Render onto bmCanvas the string pText character by character
 	// Get the character image from a snippet of bmFontStrip
-	CSize singleChar(cPixelPer, pBmFontStrip->Height());
+	CSize singleChar(cPixelPer, context.pBmFontStrip->Height());
 
 	if (pText)
 	for (unsigned int iCh = 0; iCh < strlen(pText); iCh++)
 	{
-		int chFont = strchr(pCharset, pText[iCh]) - pCharset;
+		int chFont = strchr(context.pCharset, pText[iCh]) - context.pCharset;
 		CPoint snippet(cPixelPer * chFont, 0);
 		CPoint blendPt(_rcWnd.left + iCh * cPixelPer, _rcWnd.top);
-		_bmCanvas.BlendFrom(*pBmFontStrip, CRect(snippet, singleChar), CRect(blendPt, singleChar));
+		_bmCanvas.BlendFrom(*context.pBmFontStrip, CRect(snippet, singleChar), CRect(blendPt, singleChar));
 	}
 }
 

@@ -39,8 +39,12 @@ ERC PlayAreaElmt::OnCreate(SCreateStruct &_cs)
 	if (!elmtBackground.Create(esVISIBLE, bmBackground,1,CPoint(0,0),this))
 		return ERR;	//*FIX* These old Msk classes in AppSkin.h need a lot of work.
 
+    // The game board
+
 	if ((erc = elmtTileGrid.Create(esVISIBLE,CRect(CPoint(14,14), CSize(320,320)),this)) != OK)
 		return erc;
+
+    // Buttons
 
     if (!elmtBtQuit.Create(esVISIBLE | SButton::bsPUSHSIMPLE, PLAYQUITBUTTON, CRect(CPoint(14,424),CSize(58,31)),this, IDI_QUITBUTTON))
         return ERR;
@@ -54,6 +58,8 @@ ERC PlayAreaElmt::OnCreate(SCreateStruct &_cs)
     if (!elmtBtMute.Create(esVISIBLE | SButton::bsPUSHSIMPLE, PLAYMUTEBUTTON, CRect(CPoint(155, 424), CSize(31, 28)), this))
         return ERR;
 
+    // not really buttons, things that display when triggered
+
     if (!elmtPauseLegend.Create(esVISIBLE, PLAYPAUSELEGENDBUTTON, 2, CPoint(135, 150), this))
         return ERR;
     elmtPauseLegend.SetItem(!elmtTileGrid.IsPauseGame());
@@ -62,15 +68,20 @@ ERC PlayAreaElmt::OnCreate(SCreateStruct &_cs)
         return ERR;
     elmtLevelBonus.SetItem(1); // blank
 
+    // text displays
+
     bmFontStrip.LoadPngResource(MAKEINTRESOURCE(IDB_BONUSFONT)); // Only way transparency works for now
+    
+    SFontBox::Context context(&bmFontStrip, svLex.svtextBonusScoreFont.pString, svLex.svrgbTransparent.color);
 
-    if (!elmtBonusWord.Create(&bmFontStrip, svLex.svtextBonusScoreFont.pString, svLex.svrgbTransparent.color, CRect(BONUSLEFT, BONUSTOP, BONUSRIGHT, BONUSBOTTOM), this))
+    // Error from OnCreate is returned from Create
+    if (elmtBonusWord.Create(esVISIBLE, CRect(BONUSLEFT, BONUSTOP, BONUSRIGHT, BONUSBOTTOM), this, 0, &context))
         return ERR;
 
-    if (!elmtBestWord.Create(&bmFontStrip, svLex.svtextBonusScoreFont.pString, svLex.svrgbTransparent.color, CRect(BESTLEFT, BESTTOP, BESTRIGHT, BESTBOTTOM), this))
+    if (elmtBestWord.Create(esVISIBLE, CRect(BESTLEFT, BESTTOP, BESTRIGHT, BESTBOTTOM), this, 0, &context))
         return ERR;
 
-    if (!elmtScore.Create(&bmFontStrip, svLex.svtextBonusScoreFont.pString, svLex.svrgbTransparent.color, CRect(SCORELEFT, SCORETOP, SCORERIGHT, SCOREBOTTOM), this))
+    if (elmtScore.Create(esVISIBLE, CRect(SCORELEFT, SCORETOP, SCORERIGHT, SCOREBOTTOM), this, 0, &context))
         return ERR;
 
     return OK;

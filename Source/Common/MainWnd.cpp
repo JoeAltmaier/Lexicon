@@ -94,8 +94,6 @@ int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	elmtPlay.SetFocus();
 
-//	pBoard->Event(ENew, NULL); // New game
-
 	CPoint ptWnd;
 	Registry::GetWindowPos(ptWnd);
 

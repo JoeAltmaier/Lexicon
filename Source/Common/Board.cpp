@@ -1,6 +1,6 @@
-// Board.cpp - definition of board animation of Lexicon rules
+// Board.cpp - definition of board regulation of Lexicon rules
 /*
- * Copyright (c) 2002 by
+ * Copyright (c) 2002, 2023 by
  *      Joe Altmaier  Derelict Software
  *
  * Revision History:
@@ -17,11 +17,10 @@ Board::Board(Configuration &_config, MainWnd &_winBoard)
 	: Lexicon((U8*)svLex.svdictWordList.pBytes, svLex.svdictWordList.cb, (U8*)svLex.svtextBonusList.pString, svLex.svtextBonusList.cb, svLex.svboolBonusRandom.b, Coord(svLex.svrectTilesInBoard.rect.right, svLex.svrectTilesInBoard.rect.bottom), svLex.svscalarWordLengthMin.u32), 
 	config(_config), winBoard(_winBoard)
 {
-	//Event(ENew, NULL); - wait until window initialization done
 }
 
-
-// Events from game actions
+// Events from game actions (Lexicon, MainWnd)
+// Maybe make this a queue? Have to be thread-safe then
 
 void Board::Event(EventType evt, void *id) {
 	switch (evt) {

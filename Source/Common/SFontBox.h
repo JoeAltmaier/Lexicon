@@ -32,11 +32,21 @@
 class SFontBox: public SControl
 {
 public:
-	// Construction
-	SFontBox() : pCharset(NULL), pText(NULL), offset(0, 0) { }
-	virtual ~SFontBox() { }
+	typedef struct Context {
+		TBitmap* pBmFontStrip;
+		const char* pCharset;
+		TColor transparent;
 
-	BOOL Create(TBitmap *_pBmFontStrip, const char* _pCharset, TColor _transparent, CRect& _rect, SElementRef* _pParent, UINT _nID = 0, void* _pContext = NULL);
+		Context(TBitmap* _pBmFontStrip, const char* _pCharset, TColor _transparent)
+			: pBmFontStrip(_pBmFontStrip), pCharset(_pCharset), transparent(_transparent)
+		{ };
+		~Context() {  }
+	} Context;
+
+public:
+	// Construction
+	SFontBox() : context(NULL, NULL, 0), pText(NULL) { }
+	virtual ~SFontBox() { if (pText) delete pText; }
 
 	// Text content
 	void  SetText(const char* _pszText);
@@ -53,11 +63,9 @@ protected://SFC
 	virtual void OnBlend(TBitmap& _bmCanvas, const CRect& _rcArea, const CRect& _rcClip);
 
 protected:
-	TBitmap *pBmFontStrip;
-	char* pCharset;
+	Context context;
 	int cPixelPer;
 	char* pText;
-	CPoint offset;			// Pixel offset of text
 };
 
 #endif	// __SFontBox_h
