@@ -491,7 +491,7 @@ void MainWnd::LoadSkinDefaults() {
 	svLex.svtextScoreDigits.pString = "0123456789-";
 
 	svLex.svimgBonusScoreFont.pBytes = LocateResource(IDB_BONUSFONT, TEXT("PNG"), &svLex.svimgBonusScoreFont.cb);
-	svLex.svimgBonusScoreFont.rect = CRect(0, 0, 407, 14);
+	svLex.svimgBonusScoreFont.rect = CRect(0, 0, 611, 21);
 	svLex.svtextBonusScoreFont.pString = "abcdefghijklmnopqrstuvwxyz0123456789-";
 
 	svLex.svwavePick.pBytes = LocateResource(IDW_CLICK, TEXT("WAVE"), &svLex.svwavePick.cb);

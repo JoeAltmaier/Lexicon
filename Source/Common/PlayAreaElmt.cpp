@@ -52,10 +52,10 @@ ERC PlayAreaElmt::OnCreate(SCreateStruct &_cs)
     if (!elmtBtNew.Create(esVISIBLE | SButton::bsPUSHSIMPLE, PLAYNEWBUTTON, CRect(CPoint(68,424),CSize(58,31)),this, IDI_NEWBUTTON))
         return ERR;
 
-    if (!elmtBtPause.Create(esVISIBLE | SButton::bsPUSHSIMPLE, PLAYPAUSEBUTTON, CRect(CPoint(126, 424), CSize(28, 30)), this))
+    if (!elmtBtPause.Create(esVISIBLE | SButton::bsPUSHSIMPLE, PLAYPAUSEBUTTON, CRect(CPoint(126, 424), CSize(28, 30)), this, IDI_PAUSEBUTTON))
         return ERR;
 
-    if (!elmtBtMute.Create(esVISIBLE | SButton::bsPUSHSIMPLE, PLAYMUTEBUTTON, CRect(CPoint(155, 424), CSize(31, 28)), this))
+    if (!elmtBtMute.Create(esVISIBLE | SButton::bsPUSHSIMPLE, PLAYMUTEBUTTON, CRect(CPoint(155, 424), CSize(31, 28)), this, IDI_MUTEBUTTON))
         return ERR;
 
     // not really buttons, things that display when triggered
@@ -84,6 +84,18 @@ ERC PlayAreaElmt::OnCreate(SCreateStruct &_cs)
     if (elmtScore.Create(esVISIBLE, CRect(SCORELEFT, SCORETOP, SCORERIGHT, SCOREBOTTOM), this, 0, &context))
         return ERR;
 
+
+    // clock display (bar graph of moves remaining)
+
+    bmBarAnim.LoadPngResource(MAKEINTRESOURCE(IDB_CLOCK));
+
+    {
+        SAnimBox::Context context(&bmBarAnim, 20); // 20-frame vertical animation
+        if (elmtClock.Create(esVISIBLE, CRect(CLOCKLEFT, CLOCKTOP, CLOCKRIGHT, CLOCKBOTTOM), this, 0, &context))
+            return ERR;
+        elmtClock.SetFrame(19); // Full count of moves
+    }
+
     return OK;
 }
 
@@ -98,21 +110,21 @@ void PlayAreaElmt::OnDestroy()
 //
 BOOL PlayAreaElmt::OnButtonNotify(SButtonControl *_pElmt,int _tEvent,CPoint _ptClick)
 {
-    if (_pElmt == &elmtBtQuit && _tEvent == SButtonControl::tbePRESS) {
+    if (_pElmt->GetId() == IDI_QUITBUTTON && _tEvent == SButtonControl::tbePRESS) {
         return NotifyButtonParent(_pElmt, _tEvent, _ptClick);
     }
 
-    if (_pElmt == &elmtBtNew && _tEvent == SButtonControl::tbePRESS) {
+    if (_pElmt->GetId() == IDI_NEWBUTTON && _tEvent == SButtonControl::tbePRESS) {
         // Bubble button press back to window
         return NotifyButtonParent(_pElmt, _tEvent, _ptClick);
     }
 
-    if (_pElmt == &elmtBtMute && _tEvent == SButtonControl::tbePRESS) {
+    if (_pElmt->GetId() == IDI_MUTEBUTTON && _tEvent == SButtonControl::tbePRESS) {
         elmtTileGrid.MuteGame();
         return true;
     }
 
-    if (_pElmt == &elmtBtPause && _tEvent == SButtonControl::tbePRESS) {
+    if (_pElmt->GetId() == IDI_PAUSEBUTTON && _tEvent == SButtonControl::tbePRESS) {
         elmtTileGrid.PauseGame();
         elmtPauseLegend.SetItem(!elmtTileGrid.IsPauseGame());
         return true;

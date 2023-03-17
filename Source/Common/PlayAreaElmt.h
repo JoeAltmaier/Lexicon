@@ -29,6 +29,7 @@
 #include "SysMenu.h"
 #include "AppSkin.h"
 #include "SFontBox.h"
+#include "SAnimBox.h"
 #include "ACircularList_T.h"
 
 #include "TileGridElmt.h"
@@ -91,12 +92,14 @@ private:
 	MskResButton elmtBtPause;
 	MskResDecal elmtPauseLegend;
 	MskResDecal elmtLevelBonus;
-	SFont font;
 	TBitmap bmFontStrip;
 	SFontBox elmtBonusWord;
 	SFontBox elmtBestWord;
 	SFontBox elmtScore;
 	Coord cdCenter;
+	TBitmap bmBarAnim;
+	SAnimBox elmtClock;
+
 };
 
 #endif	// __PlayAreaElmt_h
