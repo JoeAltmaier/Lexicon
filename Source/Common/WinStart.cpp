@@ -20,7 +20,7 @@ BEGIN_MESSAGE_MAP(WinStart, SWnd)
 END_MESSAGE_MAP()
 
 
-char* leaderboards[] = { "Best Board", NULL };
+char* leaderboards[] = { "Best_Board", NULL };
 
 
 WinStart::WinStart(MainWnd& _winBoard)
@@ -64,8 +64,6 @@ int  WinStart::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return ERR;
 	if (!elmtBtHelp.Create(SElement::esVISIBLE | SButton::bsPUSHSIMPLE, (const char*)svLex.svimgMainHelp.pBytes, (int)svLex.svimgMainHelp.cb, svLex.svrectMainHelp.rect, this, IDB_MAIN_HELP))
 		return ERR;
-
-	leaderboard.Start();
 
 	return 0;
 }
@@ -149,3 +147,5 @@ VOID WinStart::OnBlend(TBitmap& _bmCanvas, const CRect& _rcElmt, const CRect& _r
 {
 	_bmCanvas.CopyFrom(bmBackground, svLex.svimgBackground.rect, svLex.svimgBackground.rect, svLex.svimgBackground.rect, 0, 0);
 }
+
+void WinStart::Start() { leaderboard.Start(); }

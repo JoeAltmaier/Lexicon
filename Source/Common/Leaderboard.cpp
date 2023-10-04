@@ -39,17 +39,21 @@ void Leaderboard::Rotate()
 	SteamAPICall_t hSteamAPICall = SteamUserStats()->DownloadLeaderboardEntries(m_hSteamLeaderboard, m_eLeaderboardData,
 		-k_nMaxLeaderboardEntries / 2, k_nMaxLeaderboardEntries / 2);
 
-	// Register for the async callback
-	m_SteamCallResultDownloadEntries.Set(hSteamAPICall, this, &Leaderboard::OnLeaderboardDownloadEntries);
+	if (hSteamAPICall && m_hSteamLeaderboard) {
+		// Register for the async callback
+		m_SteamCallResultDownloadEntries.Set(hSteamAPICall, this, &Leaderboard::OnLeaderboardDownloadEntries);
 
-//	text = "Initializing...";
-	m_nLeaderboardEntries = 0;
-	Rebuild();
-//	(cbObject->*callback)(text);
+		m_nLeaderboardEntries = 0;
+		Rebuild();
+	}
+	else
+		Report("No Download API");
 }
 
 void Leaderboard::Start()
 {
+	Report("Finding board...");
+
 	// Prompt library to download leaderboard stats for all configured boards
 	for (int iBoard = 0; leaderboards[iBoard]; iBoard++)
 	{
@@ -58,14 +62,15 @@ void Leaderboard::Start()
 
 		if (hSteamAPICall)
 			m_SteamCallResultCreateLeaderboard.Set(hSteamAPICall, this, &Leaderboard::OnFindLeaderboard);
-
-		text = "Initializing...";
-		(cbObject->*callback)(text);
+		else
+			Report("No hSteamAPICall");
 	}
 }
 
 void Leaderboard::OnFindLeaderboard(LeaderboardFindResult_t* pFindLeaderboardResult, bool bIOFailure)
 {
+	Report("OnFindLeaderboard");
+
 	// see if we encountered an error during the call
 	if (!pFindLeaderboardResult->m_bLeaderboardFound || bIOFailure)
 		return;
@@ -86,6 +91,8 @@ void Leaderboard::OnFindLeaderboard(LeaderboardFindResult_t* pFindLeaderboardRes
 //-----------------------------------------------------------------------------
 void Leaderboard::OnLeaderboardDownloadEntries(LeaderboardScoresDownloaded_t* pLeaderboardScoresDownloaded, bool bIOFailure)
 {
+	Report("DownloadEntries");
+
 	// leaderboard entries handle will be invalid once we return from this function. Copy all data now.
 	m_nLeaderboardEntries = pLeaderboardScoresDownloaded->m_cEntryCount;
 	if (m_nLeaderboardEntries > k_nMaxLeaderboardEntries)
@@ -124,6 +131,7 @@ void Leaderboard::OnUploadScore(LeaderboardScoreUploaded_t* pScoreUploadedResult
 	if (!pScoreUploadedResult->m_bSuccess)
 	{
 		// error
+		Report("Error in OnUploadScore");
 	}
 
 	if (pScoreUploadedResult->m_bScoreChanged)
@@ -138,6 +146,8 @@ void Leaderboard::OnUploadScore(LeaderboardScoreUploaded_t* pScoreUploadedResult
 //-----------------------------------------------------------------------------
 void Leaderboard::Rebuild()
 {
+	Report("Rebuild");
+
 	if (m_hSteamLeaderboard)
 	{
 		// create a header for the leaderboard
@@ -182,9 +192,6 @@ void Leaderboard::Rebuild()
 				text += rgchMenuText;
 			}
 		}
+		(cbObject->*callback)(text);
 	}
-	else
-		text = "Initializing...";
-
-	(cbObject->*callback)(text);
 }

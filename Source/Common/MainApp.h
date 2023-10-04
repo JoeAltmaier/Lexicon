@@ -29,13 +29,15 @@
 //
 #define APPWNDCLASS		APPNAME
 
+class MainWnd;
+
 class MainApp : public TWinApp {
 	typedef TTimerCallbackMethod_T<MainApp> Timer;
 public:
 	MainApp(): timerSteam(this, &MainApp::OnTimerSteam) { }
 
 public:
-	CWnd *pChildWnd;
+	MainWnd *pChildWnd;
 	Timer timerSteam;
 
 // Overrides

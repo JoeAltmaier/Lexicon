@@ -32,6 +32,8 @@
 BEGIN_MESSAGE_MAP(MainWnd, SWnd)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
+	ON_WM_QUERYENDSESSION()
+	ON_WM_ENDSESSION()
 END_MESSAGE_MAP()
 
 SkinValuesLex svLex;
@@ -126,6 +128,17 @@ void MainWnd::OnSize(UINT _nType,int _cx,int _cy)
 	SWnd::OnSize(_nType,_cx,_cy);
 }
 
+// Shutdown correct behavior
+
+BOOL MainWnd::OnQueryEndSession()
+{
+	return TRUE;
+}
+
+void MainWnd::OnEndSession(BOOL)
+{
+}
+
 BOOL MainWnd::OnElmtButtonNotify(SButtonControl *_pElmt, int _tEvent, CPoint _ptClick)
 {
 	switch (_pElmt->GetId()) {
@@ -170,6 +183,11 @@ ERC MainWnd::OnElmtNotify(SElement* _pElmt, UINT _nCode, WPARAM _wParam, LPARAM 
 		pBoard->Event(EStill, NULL);
 		break;
 
+	case notifyDISCARD:
+		pBoard->Event(EDiscard, *(Coord*)_lParam);
+		delete (Coord*)_lParam;
+		break;
+
 	default:
 		return FALSE;
 	}
@@ -192,6 +210,12 @@ void MainWnd::GameOver(U32 score) { pWinStart->UpdateLeaderboards(score); }
 void MainWnd::StartSelect() { pWinStart->ShowWindow(SW_HIDE); pWinConfig->ShowWindow(SW_SHOW); pWinConfig->Invalidate(); }
 
 void MainWnd::StartHelp() { pWinStart->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_SHOW); pWinHelp->Invalidate();  }
+
+void MainWnd::Achieve(const char* pName) { if (achievement.SetAchievement(pName)) achievement.Commit(); }
+void MainWnd::Stat(const char* pName) { if (achievement.IncStat(pName)) achievement.Commit(); }
+void MainWnd::Timer() {
+	if (!bStarted) { bStarted = achievement.Start(); if (bStarted) pWinStart->Start(); }
+}
 
 void MainWnd::ReturnToMainScreen() { pWinConfig->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_HIDE); pWinStart->ShowWindow(SW_SHOW); pWinStart->Invalidate(); }
 

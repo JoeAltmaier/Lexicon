@@ -7,7 +7,7 @@
 #include "AppAfx.h"
 
 #include <cstdint>
-#include "stdafx.h"
+//#include "stdafx.h"
 
 typedef uint8_t U8;
 typedef int16_t S16;
@@ -15,20 +15,21 @@ typedef uint16_t U16;
 typedef int32_t S32;
 typedef uint32_t U32;
 
-typedef enum { ENextLevel, ELetterNew, ELetterUsed, ELettersUsed, EQuit, ENew, EPause, EMute, EMoveTile, ETileDropped, ESwap, EStill, ETilesBurned, EScore, EScoreUpdate, EBonusWord, EBonusUsed, EBestWord, EBoardExhausted, EBoardImpossible, EWinComplete, EMainWindow, ELevelBonus, EGameOver
+typedef enum { ENextLevel, ELetterNew, ELetterUsed, EClockCredit, EQuit, ENew, EPause, EMute, EMoveTile, ETileDropped, ESwap, EDiscard, EStill, ETilesBurned, EScore, EScoreUpdate, EBonusWord, EBonusUsed, EBestWord, EBoardExhausted, EBoardImpossible, EWinComplete, EMainWindow, ELevelBonus, EGameOver, EAchieve, EStat
 } EventType;
 
 typedef enum { NLeft, NRight, NTop, NBottom, NNot } NeighborType;
 
-enum {	// Notifiations to parent element
-	notifyRESET = 1,
-	notifyMOVE = 2,
-	notifyCOPY = 3,
-	notifyRELEASE = 4,
-	notifyRETURN = 5,
-	notifyFLOATER = 6,
-	notifyIDLE = 7,
-	notifySTILL = 8
+enum {	// Notifications to parent element
+	notifyRESET,
+	notifyMOVE,
+	notifyCOPY,
+	notifyRELEASE,
+	notifyRETURN,
+	notifyFLOATER,
+	notifyIDLE,
+	notifySTILL,
+	notifyDISCARD
 };
 
 class Coord { 

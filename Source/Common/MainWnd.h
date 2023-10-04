@@ -32,6 +32,7 @@
 #include "SWnd.h"
 #include "MainApp.h"
 #include "Skins.h"
+#include "Achievement.h"
 
 class WinStart;
 class WinConfig;
@@ -39,14 +40,14 @@ class WinHelpAbout;
 
 class MainWnd : public SWnd {
 public:
-	MainWnd(): config(HKEY_CURRENT_USER, TEXT("Software\\Iowa Software Design\\Lexicon")), pSkinLoader(NULL) { }
+	MainWnd(): config(HKEY_CURRENT_USER, TEXT("Software\\Iowa Software Design\\Lexicon")), pSkinLoader(NULL), bStarted(false) { }
 
 	virtual ~MainWnd() { }
 
 public:
 	void About();
 	void PopulateTiles(U8 *); // in playelmt, Board, from New etc
-	void Time(S32 cTick) {} // from board, to clock element
+	void Time(U32 cTick) { elmtPlay.SetClock(cTick); } // from board, to clock element
 	void ScoreAnimation(const Coord& cd, const U8* pWord, S32 score, BOOL bHoriz);
 	void SetScore(U32 score) { elmtPlay.SetScore(score); }
 	void SetBonusWord(const U8* _pBonusWord);
@@ -61,6 +62,9 @@ public:
 	void Exit() { exit(0); }
 	void StartSelect();
 	void StartHelp();
+	void Achieve(const char*);
+	void Stat(const char*);
+	void Timer();
 
 // These aren't referenced yet!
 //	void StopAnimation(Animation&);
@@ -70,6 +74,10 @@ public:
 protected://CWnd
 	int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	void OnSize(UINT _nType,int _cx,int _cy);
+
+	BOOL OnQueryEndSession();
+
+	void OnEndSession(BOOL);
 
 protected://SWnd
     virtual BOOL OnElmtButtonNotify(SButtonControl *_pElmt, int _tEvent, CPoint _ptClick) override;
@@ -97,6 +105,9 @@ public:
 	WinStart* pWinStart;
 	WinConfig* pWinConfig;
 	WinHelpAbout* pWinHelp;
+
+	Achievement achievement;
+	bool bStarted;
 
 protected:
 	DECLARE_MESSAGE_MAP()

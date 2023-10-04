@@ -1,2 +1,2 @@
-#define VERSION_STRING "1.6"
+#define VERSION_STRING "1.7.1"
 #define SKIN_MAJORVERSION 1

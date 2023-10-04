@@ -10,19 +10,29 @@
 **/
 
 #include "Lexicon.h"
+#include "LexSkins.h"
 #include "Random.h"
 
 char Lexicon::aChDist[]="aaaaaaaaabbccddddeeeeeeeeeffggghhiiiiiiiiijkllllmmnnnnnnooooooooqqprrrrrrssssttttttuuuuvvwwxyyz";
 U32 Lexicon::nDist;
 
-Lexicon::Lexicon(U8 *pWords, U32 cb, U8 *_pBonusList, U32 _cbBonusList, BOOL _bRandomBonus, Coord _size, U32 _cbWordMin)
-: size(_size), dictionary(pWords, cb, _pBonusList, _cbBonusList), cbWordMin(_cbWordMin), pBonusList(_pBonusList), cbBonusList(_cbBonusList), bRandomBonus(_bRandomBonus), iBonus(0), state(PLAY_IDLE), cLevelsConsecutive(0)
+Lexicon::Lexicon(Configuration& _config, U8 *pWords, U32 cb, U8 *_pBonusList, U32 _cbBonusList, BOOL _bRandomBonus, Coord _size, U32 _cbWordMin)
+: config(_config), size(_size), score(0), dictionary(pWords, cb, _pBonusList, _cbBonusList), cbWordMin(_cbWordMin), pBonusList(_pBonusList), cbBonusList(_cbBonusList), bRandomBonus(_bRandomBonus), iBonus(0), state(PLAY_IDLE), cLevelsConsecutive(0), cLevelsOneGame(0), cBonusWords(0)
 {
 	board=new U8[size.x * size.y+1];
 	board[size.x * size.y]=0;
 	bDirty=new BOOL[size.x * size.y];
 	bBurn=new BOOL[size.x * size.y];
 	nDist=strlen(aChDist);
+
+	clockMax = CLOCKSTEPS;
+//	if (config.IsClocked())
+	//	clockMax -= level * 2;
+
+	if (config.IsCrash())
+		clock = clockMax;
+	else
+		clock = clockMax / 2;
 }
 
 void Lexicon::FillBoard() {
@@ -30,8 +40,12 @@ void Lexicon::FillBoard() {
 	char *aCh=new char[size.x * size.y];
 	S32 cCh=0;
 
+	// Always put bonus word letters on board
+	U32 iEntry = iBonus;
+
 	while (cCh < size.x * size.y - max(size.x, size.y)) {
-		const U8 *pWord=dictionary.Entry(Random::Value(dictionary.GetNWord()));
+		const U8 *pWord=dictionary.Entry(iEntry); // first time is bonus word
+		iEntry = Random::Value(dictionary.GetNWord()); // Next word
 		U32 cb=dictionary.WordLen(pWord);
 		memmove(&aCh[cCh], pWord, cb);
 		cCh += cb;
@@ -103,9 +117,23 @@ void Lexicon::LevelEnd(bool _bQuit) {
 				Blank(cd);
 			}
 
+	if (!_bQuit) {
+		cLevelsOneGame++;
+		if (cLevelsOneGame == 1)
+			Event(EAchieve, "LEXICON_FINISHEDLEVEL");
+		if (cLevelsOneGame == 2)
+			Event(EAchieve, "LEXICON_TWOLEVELS");
+		if (cLevelsOneGame == 5)
+			Event(EAchieve, "LEXICON_FIVELEVELS");
+		if (cLevelsOneGame == 10)
+			Event(EAchieve, "LEXICON_TENLEVELS");
+	}
+
 	if (bAllBlank)
 	{
 		cLevelsConsecutive++;
+
+		Event(EAchieve, "LEXICON_CLEAREDLEVEL");
 
 		// Credit the score
 		U32 dScore = cLevelsConsecutive * 10000;
@@ -131,14 +159,19 @@ void Lexicon::ChooseBonusWord() {
 
 	U32 nBonus=dictionary.GetNBonus();
 	if (nBonus) {
+		// Word from configured bonus list
 		if (bRandomBonus)
 			iBonus=Random::Value(dictionary.GetNBonus());
-		else
-			iBonus = (iBonus+1) % dictionary.GetNBonus();
+		else {
+			iBonus = (iBonus + 1) % dictionary.GetNBonus();
+			if (iBonus == 0) // did the whole list; starting over!
+				Event(EAchieve, "LEXICON_BONUSLIST");
+		}
 
 		Event(EBonusWord, (void*)dictionary.GetIBonus(iBonus));
 	
 	} else {
+		// Random word from regular dictionary
 		BOOL bOk=false;
 		const U8 *pWord;
 		while (!bOk) {
@@ -245,6 +278,7 @@ void Lexicon::Match() {
 
 	U32 bonus=0; // Bonus for each word beyond the first
 	S32 cValueTotal=0;// Total of all letter values
+	U32 total = 0; // Total word score
 
 	// Loop over rows, large to small word length
 	U8 *pRow=new U8[size.x+1];
@@ -270,6 +304,7 @@ void Lexicon::Match() {
 						BurnRow(cd, cCh);
 						U32 dScore= DScore(&pRow[cd.x], cCh);
 						Event(EScore, new Score(cd, &pRow[cd.x], cCh, dScore + bonus, true));
+						total += dScore;
 						bonus += BONUSWORD; // increase for next word if any
 						cValueTotal += DValue(&pRow[cd.x], cCh);
 					}
@@ -298,10 +333,18 @@ void Lexicon::Match() {
 						BurnCol(cd, cCh);
 						U32 dScore= DScore(&pCol[cd.y], cCh);
 						Event(EScore, new Score(cd, &pCol[cd.y], cCh, dScore + bonus, false));
+						total += dScore;
 						bonus += BONUSWORD; // increase for next word if any
 						cValueTotal += DValue(&pCol[cd.y], cCh);
 					}
 	}
+
+	if (total >= 1200 && total < 2400)
+		Event(EAchieve, "LEXICON_SCORE1200");
+	if (total >= 2400 && total < 5000)
+		Event(EAchieve, "LEXICON_SCORE2400");
+	if (total >= 5000)
+		Event(EAchieve, "LEXICON_SCORE5000");
 
 	// Post event for every burned letter
 	for (cd.x=0; cd.x < size.x; cd.x++)
@@ -316,11 +359,30 @@ void Lexicon::Match() {
 
 	// Credit clock for matching
 	if (cValueTotal)
-		Event(ELettersUsed, (void*)cValueTotal);
+	{
+		if (config.IsCrash())
+		{
+			// Credit each word match with one discard
+			clock += clockMax / 3;
+
+			if (clock > clockMax)
+				clock = clockMax;
+
+			Event(EClockCredit, (void*)clock);
+		}
+	}
+
+	// Debit clock for a move
+	if (config.IsShuffle()) {
+		clock -= CLOCKPERSWAP;
+		Event(EClockCredit, (void*)clock);
+	}
 
 	// Choose new bonus word
-	if (bBonusUsed)
+	if (bBonusUsed) {
 		Event(EBonusUsed);
+		Event(EStat, "LEXICON_BONUSWORD");
+	}
 }
 
 void Lexicon::ReRack() {
@@ -532,6 +594,7 @@ void Lexicon::AnimationIdle() {
 		break;
 	case PLAY_LEVEL:
 		TestExhausted();
+
 		TestImpossible();
 		break;
 	case PLAY_END:
@@ -622,6 +685,12 @@ FindWords:
 	Event(EBoardImpossible, NULL);
 }
 
+void Lexicon::TestDiscard(Coord cd)
+{
+	// If game permits discard, do so
+	//SetTime(clock - clockDiscard);
+
+}
 
 // Helper Coord global functions
 Coord operator+(const Coord &cd1, const Coord &cd2) { return Coord(cd1.x+cd2.x, cd1.y+cd2.y); }

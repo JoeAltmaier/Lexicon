@@ -70,6 +70,7 @@ public:
 	void SetBonusWord(const char* _pBonusWord) { elmtBonusWord.SetText(_pBonusWord); }
 	void SetBestWord(const char* _pBestWord) { elmtBestWord.SetText(_pBestWord); }
 	void SetScore(U32 score);
+	void SetClock(U32 clock) { elmtClock.SetFrame(clock); }
 	void StartAnimation(const Coord& cd) { elmtTileGrid.StartAnimation(cd); }
 	void StartAnimation(const Coord& cdAt, const Coord& cdTo) { elmtTileGrid.StartAnimation(cdAt, cdTo); }
 	void AnimationIdle() { elmtTileGrid.AnimationIdle(); }

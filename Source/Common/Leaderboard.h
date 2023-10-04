@@ -54,6 +54,12 @@ private:
 
 	void OnLeaderboardDownloadEntries(LeaderboardScoresDownloaded_t* pLeaderboardScoresDownloaded, bool bIOFailure);
 	CCallResult<Leaderboard, LeaderboardScoresDownloaded_t> m_SteamCallResultDownloadEntries;
+
+	void Report(const char *msg) {
+		text.clear();
+		text = msg;
+		(cbObject->*callback)(text);
+	}
 };
 
 #endif

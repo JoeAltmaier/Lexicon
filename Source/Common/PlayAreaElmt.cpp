@@ -90,10 +90,10 @@ ERC PlayAreaElmt::OnCreate(SCreateStruct &_cs)
     bmBarAnim.LoadPngResource(MAKEINTRESOURCE(IDB_CLOCK));
 
     {
-        SAnimBox::Context context(&bmBarAnim, 20); // 20-frame vertical animation
+        SAnimBox::Context context(&bmBarAnim, CLOCKSTEPS); // 20-frame vertical animation
         if (elmtClock.Create(esVISIBLE, CRect(CLOCKLEFT, CLOCKTOP, CLOCKRIGHT, CLOCKBOTTOM), this, 0, &context))
             return ERR;
-        elmtClock.SetFrame(19); // Full count of moves
+        elmtClock.SetFrame(CLOCKSTEPS-1); // Full count of moves
     }
 
     return OK;

@@ -27,6 +27,7 @@ public:
 
 	int  OnCreate(LPCREATESTRUCT lpCreateStruct);
 	void UpdateLeaderboards(int score) { leaderboard.UpdateLeaderboards(score); }
+	void Start();
 
 private:
 	void Done();
@@ -38,6 +39,7 @@ private:
 	virtual VOID OnBlend(TBitmap& _bmCanvas, const CRect& _rcElmt, const CRect& _rcClip) override;
 	virtual BOOL OnTextboxNotify(STextboxControl* _pElmt, int _nCode, CPoint _ptClick) ;
 	void OnLeaderboardCallback(std::string&)  override;
+
 private:
 	MainWnd& winBoard;
 

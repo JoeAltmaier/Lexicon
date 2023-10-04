@@ -45,7 +45,7 @@ public:
 	SAnimBox() : context(NULL, 0), iFrame(0), cPixelPer(1) { }
 	virtual ~SAnimBox() {  }
 
-	void SetFrame(int _iFrame) { iFrame = _iFrame; }
+	void SetFrame(int _iFrame) { iFrame = _iFrame; Invalidate(); }
 
 protected://SFC
 	virtual ERC  OnCreate(SCreateStruct& _cs);

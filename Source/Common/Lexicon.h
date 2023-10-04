@@ -15,7 +15,9 @@
 
 #include "LexTypes.h"
 #include "LexDict.h"
+#include "Configuration.h"
 
+#define CLOCKSTEPS 20
 
 class Lexicon {
 	// Board state
@@ -28,6 +30,10 @@ class Lexicon {
 
 	// Score state
 	S32 score;
+
+	// Clock state
+	U32 clock;
+	U32 clockMax;
 
 	// Dictionary
 	LexDict dictionary;
@@ -44,6 +50,8 @@ class Lexicon {
 	char aBestWord[32];
 	U32 dScoreBestWord;
 	U32 cLevelsConsecutive;
+	U32 cLevelsOneGame;
+	U32 cBonusWords;
 
 	static
 	char aChDist[];
@@ -51,8 +59,11 @@ class Lexicon {
 	static
 	U32 nDist;
 
+protected:
+	Configuration& config;
+
 public:
-	Lexicon(U8 *_pWords, U32 _cb, U8 *_pBonusList, U32 _cbBonusList, BOOL _bBonusRandom, Coord _size, U32 _cbWordMin);
+	Lexicon(Configuration &_config, U8 *_pWords, U32 _cb, U8 *_pBonusList, U32 _cbBonusList, BOOL _bBonusRandom, Coord _size, U32 _cbWordMin);
 
 	void FillBoard();
 
@@ -64,6 +75,7 @@ public:
 	void ClearMatch();
 	void LevelEnd(bool _bQuit = false);
 	void ChooseBonusWord();
+	void SetClock() { Event(EClockCredit, (void*)clock); }
 
 	virtual
 	void Event(EventType, void *_id = NULL)=0;
@@ -82,6 +94,7 @@ public:
 	Coord Size() { return size; }
 
 	U32 GetScore() { return score; }
+	U32 GetClock() { return clock; }
 
 	U8 &Letter(const Coord &cd) { return board[size.x * cd.y + cd.x]; }
 
@@ -97,6 +110,9 @@ public:
 	BOOL NoBlank();
 	void AnimationIdle();
 	U8* Letters() { return board; }
+
+protected:
+	void TestDiscard(Coord cd);
 
 private:
 

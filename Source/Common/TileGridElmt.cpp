@@ -195,7 +195,8 @@ void TileGridElmt::StartAnimation(const Coord& cd)
 void TileGridElmt::StartAnimation(const Coord& cdAt, const Coord& cdTo)
 {
 	TileElmt* pElmtTile = TileAt(CPoint(cdAt.x * sizeTile.cx, cdAt.y * sizeTile.cy));
-	SlideTileElmt(pElmtTile, CPoint(cdTo.x * sizeTile.cx, cdTo.y * sizeTile.cy));
+	if (pElmtTile)
+		SlideTileElmt(pElmtTile, CPoint(cdTo.x * sizeTile.cx, cdTo.y * sizeTile.cy));
 }
 
 TileElmt* TileGridElmt::TileAt(CPoint _pt)
@@ -274,7 +275,7 @@ void TileGridElmt::Release(TileElmt* pElmtTile)
 		SlideTileElmt(pElmtTile, pElmtUnder->GetSliderHomePt());
 		SlideTileElmt(pElmtUnder, ptElmt);
 
-		// wParam is ptr to double cell coord for swap
+		// lParam is ptr to double cell coord for swap
 		NotifyParent(notifyRELEASE, (LPARAM)new SwapTiles(Coord(ptElmt.x / pElmtTile->Width(), ptElmt.y / pElmtTile->Height()), Coord(ptElmtSwap.x / pElmtUnder->Width(), ptElmtSwap.y / pElmtUnder->Height())));
 	}
 
@@ -306,9 +307,21 @@ BOOL TileGridElmt::OnLButtonUp(UINT _nFlags, CPoint _point)
 	bLButtonDown = false;
 	if (pElmtDrag)
 	{
-		Release(pElmtDrag);
+#if 0
+		// Is a discard?
+			//  and discard allowed? Then slide to discard frame, when will it burn?
+			...
+			CPoint ptElmt = pElmtDrag->GetSliderHomePt();
+			// lParam is cell home coord for tile discarded
+			NotifyParent(notifyDISCARD, (LPARAM)new Coord(ptElmt.x / pElmtTile->Width(), ptElmt.y / pElmtTile->Height()));
 
-		pElmtDrag->EnableSlider(true);
+		else 
+#endif
+		{
+			Release(pElmtDrag);
+
+			pElmtDrag->EnableSlider(true);
+		}
 
 		pElmtDrag = NULL;
 	}

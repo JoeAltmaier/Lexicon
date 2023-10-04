@@ -14,8 +14,8 @@
 #include "MainWnd.h"
 
 Board::Board(Configuration &_config, MainWnd &_winBoard)
-	: Lexicon((U8*)svLex.svdictWordList.pBytes, svLex.svdictWordList.cb, (U8*)svLex.svtextBonusList.pString, svLex.svtextBonusList.cb, svLex.svboolBonusRandom.b, Coord(svLex.svrectTilesInBoard.rect.right, svLex.svrectTilesInBoard.rect.bottom), svLex.svscalarWordLengthMin.u32), 
-	config(_config), winBoard(_winBoard)
+	: Lexicon(_config, (U8*)svLex.svdictWordList.pBytes, svLex.svdictWordList.cb, (U8*)svLex.svtextBonusList.pString, svLex.svtextBonusList.cb, svLex.svboolBonusRandom.b, Coord(svLex.svrectTilesInBoard.rect.right, svLex.svrectTilesInBoard.rect.bottom), svLex.svscalarWordLengthMin.u32), 
+	winBoard(_winBoard)
 {
 }
 
@@ -36,8 +36,9 @@ void Board::Event(EventType evt, void *id) {
 		ResetScore();
 	case ENextLevel:
 		ClearMatch();
-		FillBoard(); // Fill out the letter grid from valid words
 		ChooseBonusWord();
+		FillBoard(); // Fill out the letter grid from valid words
+		SetClock();
 		winBoard.PopulateTiles(Letters()); // Give the letter grid to the window to display
 		break;
 
@@ -76,9 +77,9 @@ void Board::Event(EventType evt, void *id) {
 		ReRack();
 		break;
 
-	case ELettersUsed:
-		// Clocked games get an extra tick back per letter
-		winBoard.Time(-(S32)id);
+	case EClockCredit:
+		// Set total clock credits
+		winBoard.Time((U32)id);
 		break;
 
 	case EScore:
@@ -132,8 +133,15 @@ void Board::Event(EventType evt, void *id) {
 	case EGameOver:
 		winBoard.GameOver(GetScore());
 		break;
-	}
 
+	case EAchieve:
+		winBoard.Achieve((const char *)id);
+		break;
+
+	case EStat:
+		winBoard.Stat((const char*)id);
+		break;
+	}
 }
 
 void Board::Event(EventType evt, Coord cd) {
@@ -145,6 +153,10 @@ void Board::Event(EventType evt, Coord cd) {
 	case ELetterUsed:
 		// Letter burned.  Animate that.
 		winBoard.StartAnimation(cd);
+		break;
+
+	case EDiscard:
+		TestDiscard(cd);
 		break;
 	}
 }

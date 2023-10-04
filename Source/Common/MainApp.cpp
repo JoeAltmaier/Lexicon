@@ -30,6 +30,9 @@
 #include "AfxSock.h"
 #include <winerror.h>
 
+//#include <WindowsAppSDK-VersionInfo.h>
+//#include <MddBootstrap.h>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -39,18 +42,6 @@ BEGIN_MESSAGE_MAP(MainApp, TWinApp)
 //	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 END_MESSAGE_MAP()
 
-
-
-#if 0
-Steamworks_SelfCheck();
-
-// optional Steam input-device API
-if (!SteamInput()->Init(false))
-{
-	... exit ...
-}
-
-#endif
 
 extern "C" void __cdecl SteamAPIDebugTextHook(int nSeverity, const char* pchDebugText)
 {
@@ -68,6 +59,7 @@ extern "C" void __cdecl SteamAPIDebugTextHook(int nSeverity, const char* pchDebu
 
 void MainApp::OnTimerSteam(Timer*)
 {
+	pChildWnd->Timer();
 	SteamGameServer_RunCallbacks();
 }
 
@@ -88,6 +80,11 @@ BOOL MainApp::InitInstance()
 	if (!Registry::IsMultipleInstances() && !IsFirstInstance(_T(APPWNDCLASS)))
 		return FALSE;
   
+
+//	if (FAILED(MddBootstrapInitialize(Microsoft::WindowsAppSDK::Release::MajorMinor, Microsoft::WindowsAppSDK::Release::VersionTag, Microsoft::WindowsAppSDK::Runtime::Version::UInt64))) {
+//		throw std::exception("Error in Bootstrap initialization");
+//	}
+
 	WNDCLASS wndcls;
 
     memset(&wndcls, 0, sizeof(WNDCLASS));   // start with NULL defaults
@@ -193,6 +190,8 @@ BOOL MainApp::InitInstance()
 	}
 	else
 		AfxMessageBox(_T("Error: Failed to create main window!"));
+
+	timerSteam.Start(100, 100, 0);
 
 	return fCreated;
 }

@@ -20,7 +20,7 @@
 #ifndef __AppMsg_h
 #define __AppMsg_h
 
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "TTypes.h"
 
 // Message Range Meaning 
