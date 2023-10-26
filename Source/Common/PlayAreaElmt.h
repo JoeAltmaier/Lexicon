@@ -67,6 +67,7 @@ public:
 		elmtTileGrid.DropPlayTiles(board);
 	}
 	void CreateFloater(const Coord& cd, S32 score) { elmtTileGrid.FloatScore(cd, score); }
+	void CreateFloatWord(const Coord& cd, const U8* _pWord) { elmtTileGrid.FloatScore(cd, _pWord); }
 	void SetBonusWord(const char* _pBonusWord) { elmtBonusWord.SetText(_pBonusWord); }
 	void SetBestWord(const char* _pBestWord) { elmtBestWord.SetText(_pBestWord); }
 	void SetScore(U32 score);

@@ -176,6 +176,14 @@ void TileGridElmt::FloatScore(const Coord& cd, S32 score)
 	timerFloat.Start(TICKFLOAT);
 }
 
+void TileGridElmt::FloatScore(const Coord& cd, const U8* _pWord)
+{
+	// cd is tile coord
+	// make cd into pixel coord
+	floaters.ForgeFloaterElmt(esVISIBLE, CPoint(cd.x * sizeTile.cx, cd.y * sizeTile.cy), (const char *)_pWord);
+	timerFloat.Start(TICKFLOAT);
+}
+
 void TileGridElmt::OnTimerFloat(Timer* _pTimer)
 {
 	floaters.SlideFloaters();

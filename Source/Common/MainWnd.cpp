@@ -237,6 +237,9 @@ void MainWnd::ScoreAnimation(const Coord& cd, const U8* pWord, S32 score, BOOL b
 	Coord center = cd.Center(bHoriz ? cCh : 0, !bHoriz ? cCh : 0);
 
 	elmtPlay.CreateFloater(center, score);
+	center.y++;
+	if (cCh > 1) // Not burned letters, just words
+		elmtPlay.CreateFloatWord(center, pWord);
 }
 
 void MainWnd::SetBonusWord(const U8* _pBonusWord) 

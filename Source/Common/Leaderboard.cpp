@@ -35,19 +35,23 @@ void Leaderboard::Rotate()
 		m_eLeaderboardData = k_ELeaderboardDataRequestGlobal;
 		break;
 	}
-	// Retrigger fetch of stats
-	SteamAPICall_t hSteamAPICall = SteamUserStats()->DownloadLeaderboardEntries(m_hSteamLeaderboard, m_eLeaderboardData,
-		-k_nMaxLeaderboardEntries / 2, k_nMaxLeaderboardEntries / 2);
+	if (m_hSteamLeaderboard) {
+		// Retrigger fetch of stats
+		SteamAPICall_t hSteamAPICall = SteamUserStats()->DownloadLeaderboardEntries(m_hSteamLeaderboard, m_eLeaderboardData,
+			-k_nMaxLeaderboardEntries / 2, k_nMaxLeaderboardEntries / 2);
 
-	if (hSteamAPICall && m_hSteamLeaderboard) {
-		// Register for the async callback
-		m_SteamCallResultDownloadEntries.Set(hSteamAPICall, this, &Leaderboard::OnLeaderboardDownloadEntries);
+		if (hSteamAPICall) {
+			// Register for the async callback
+			m_SteamCallResultDownloadEntries.Set(hSteamAPICall, this, &Leaderboard::OnLeaderboardDownloadEntries);
 
-		m_nLeaderboardEntries = 0;
-		Rebuild();
+			m_nLeaderboardEntries = 0;
+			Rebuild();
+
+			return;
+		}
 	}
-	else
-		Report("No Download API");
+
+	Report("No Download API");
 }
 
 void Leaderboard::Start()
@@ -57,6 +61,7 @@ void Leaderboard::Start()
 	// Prompt library to download leaderboard stats for all configured boards
 	for (int iBoard = 0; leaderboards[iBoard]; iBoard++)
 	{
+		Report(leaderboards[iBoard]);
 		SteamAPICall_t hSteamAPICall = SteamUserStats()->FindOrCreateLeaderboard(leaderboards[iBoard],
 			k_ELeaderboardSortMethodDescending, k_ELeaderboardDisplayTypeNumeric);
 
