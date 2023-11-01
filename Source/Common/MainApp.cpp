@@ -60,7 +60,7 @@ extern "C" void __cdecl SteamAPIDebugTextHook(int nSeverity, const char* pchDebu
 void MainApp::OnTimerSteam(Timer*)
 {
 	pChildWnd->Timer();
-	SteamGameServer_RunCallbacks();
+	SteamAPI_RunCallbacks();
 }
 
 

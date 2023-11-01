@@ -20,7 +20,7 @@ BEGIN_MESSAGE_MAP(WinStart, SWnd)
 END_MESSAGE_MAP()
 
 
-char* leaderboards[] = { "Best_Board", NULL };
+char* leaderboards[] = { "Best Board", NULL };
 
 
 WinStart::WinStart(MainWnd& _winBoard)

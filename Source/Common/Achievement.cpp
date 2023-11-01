@@ -10,7 +10,7 @@
 
 #include "Achievement.h"
 
-Achievement::Achievement()
+Achievement::Achievement(): bStarted(false)
 {
 }
 
@@ -19,7 +19,15 @@ Achievement::~Achievement() {
 
 bool Achievement::Start() 
 {
-	return SteamUserStats()->RequestCurrentStats();
+	int32 stat; // for probing init complete
+
+	if (!bStarted)
+		bStarted = SteamUserStats()->RequestCurrentStats();
+
+	if (bStarted)
+		return SteamUserStats()->GetStat("LEXICON_TESTINIT", &stat); // stats received, fully initialized
+	else
+		return false;
 }
 
 bool Achievement::SetAchievement(const char* pChName) {

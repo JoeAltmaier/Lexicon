@@ -11,8 +11,9 @@
 #include "Leaderboard.h"
 #include "Resource1.h"
 
+
 Leaderboard::Leaderboard(char** _leaderboards, LeaderboardCallback* _cbObject, Callback _callback)
-	: leaderboards(_leaderboards), cbObject(_cbObject), callback(_callback), m_eLeaderboardData(k_ELeaderboardDataRequestGlobal), m_hSteamLeaderboard(NULL)
+	: leaderboards(_leaderboards), cbObject(_cbObject), callback(_callback), m_nLeaderboardEntries(0), m_eLeaderboardData(k_ELeaderboardDataRequestGlobal), m_hSteamLeaderboard(NULL)
 {
 }
 
@@ -45,8 +46,12 @@ void Leaderboard::Rotate()
 			m_SteamCallResultDownloadEntries.Set(hSteamAPICall, this, &Leaderboard::OnLeaderboardDownloadEntries);
 
 			m_nLeaderboardEntries = 0;
-			Rebuild();
+//			Rebuild();
 
+			return;
+		}
+		else {
+			Report("No stats");
 			return;
 		}
 	}
@@ -57,13 +62,14 @@ void Leaderboard::Rotate()
 void Leaderboard::Start()
 {
 	Report("Finding board...");
+	if (m_hSteamLeaderboard)
+		return;
 
 	// Prompt library to download leaderboard stats for all configured boards
 	for (int iBoard = 0; leaderboards[iBoard]; iBoard++)
 	{
 		Report(leaderboards[iBoard]);
-		SteamAPICall_t hSteamAPICall = SteamUserStats()->FindOrCreateLeaderboard(leaderboards[iBoard],
-			k_ELeaderboardSortMethodDescending, k_ELeaderboardDisplayTypeNumeric);
+		SteamAPICall_t hSteamAPICall = SteamUserStats()->FindOrCreateLeaderboard(leaderboards[iBoard], k_ELeaderboardSortMethodDescending, k_ELeaderboardDisplayTypeNumeric);
 
 		if (hSteamAPICall)
 			m_SteamCallResultCreateLeaderboard.Set(hSteamAPICall, this, &Leaderboard::OnFindLeaderboard);

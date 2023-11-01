@@ -46,7 +46,7 @@ private:
 	void (LeaderboardCallback::* callback)(std::string&) ;
 
 	// Called when SteamUserStats()->FindOrCreateLeaderboard() returns asynchronously
-	void OnFindLeaderboard(LeaderboardFindResult_t* pFindLearderboardResult, bool bIOFailure);
+	void OnFindLeaderboard(LeaderboardFindResult_t* pFindLearderboardResult, bool);
 	CCallResult<Leaderboard, LeaderboardFindResult_t> m_SteamCallResultCreateLeaderboard;
 
 	void OnUploadScore(LeaderboardScoreUploaded_t* pScoreUploadedResult, bool bIOFailure);

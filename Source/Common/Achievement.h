@@ -32,6 +32,7 @@ public:
 	void Commit();
 
 private:
+	bool bStarted;
 };
 
 #endif // _Achievement_h

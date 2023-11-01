@@ -166,21 +166,18 @@ bool TileGridElmt::DropGameOver()
 	return true;
 }
 
-void TileGridElmt::FloatScore(const Coord& cd, S32 score) 
+void TileGridElmt::FloatScore(const Coord& cd, S32 score, const U8* pWord) 
 {
 	// cd is tile coord
 	// make cd into pixel coord; score into text
 	char aScore[32];
 	sprintf_s(aScore, "%d", score);
-	floaters.ForgeFloaterElmt(esVISIBLE, CPoint(cd.x * sizeTile.cx, cd.y * sizeTile.cy), aScore); 
-	timerFloat.Start(TICKFLOAT);
-}
+	FloaterElmt *pFe = floaters.ForgeFloaterElmt(esVISIBLE, CPoint(cd.x * sizeTile.cx, cd.y * sizeTile.cy), aScore);
 
-void TileGridElmt::FloatScore(const Coord& cd, const U8* _pWord)
-{
-	// cd is tile coord
-	// make cd into pixel coord
-	floaters.ForgeFloaterElmt(esVISIBLE, CPoint(cd.x * sizeTile.cx, cd.y * sizeTile.cy), (const char *)_pWord);
+	int cCh = strlen((const char *)pWord);
+	if (cCh > 1) // not single letters, only words
+		floaters.ForgeFloaterElmt(esVISIBLE, CPoint(cd.x * sizeTile.cx, cd.y * sizeTile.cy + pFe->GetHeight() * 3 / 2), (const char*)pWord);
+
 	timerFloat.Start(TICKFLOAT);
 }
 

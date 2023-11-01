@@ -229,17 +229,12 @@ void MainWnd::PopulateTiles(U8 *letters)
 
 void MainWnd::ScoreAnimation(const Coord& cd, const U8* pWord, S32 score, BOOL bHoriz)
 {
-	// translate cd to pixel coordinates. bHoriz if word is horizontal else vertical
-	// cd is tile coordinate on play grid
 	int cCh = strlen((char*)pWord);
 
-	// float score from center of word
+	// float from center of word tiles
 	Coord center = cd.Center(bHoriz ? cCh : 0, !bHoriz ? cCh : 0);
 
-	elmtPlay.CreateFloater(center, score);
-	center.y++;
-	if (cCh > 1) // Not burned letters, just words
-		elmtPlay.CreateFloatWord(center, pWord);
+	elmtPlay.CreateFloater(center, score, pWord);
 }
 
 void MainWnd::SetBonusWord(const U8* _pBonusWord) 
@@ -536,7 +531,7 @@ void MainWnd::LoadSkinDefaults() {
 
 	svLex.svtextBonusList = svtext;
 
-	svLex.svboolBonusRandom.b = true;
+	svLex.svboolBonusRandom.b = false;
 
 	svLex.svscalarWordLengthMin.u32 = SMALLESTWORD;
 	svLex.svscalarClockPerSwap.u32 = CLOCKPERSWAP;

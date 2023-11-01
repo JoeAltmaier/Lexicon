@@ -73,8 +73,7 @@ public:
 	void PauseGame() { bPause = !bPause; }
 	void PauseGame(bool _bPause) { bPause = _bPause; }
 	bool IsPauseGame()				{ return bPause; }
-	void FloatScore(const Coord& cd, S32 score);
-	void FloatScore(const Coord& cd, const U8*);
+	void FloatScore(const Coord& cd, S32 score, const U8* pWord);
 	void StartAnimation(const Coord& cd);
 	void StartAnimation(const Coord& cdAt, const Coord& cdTo);
 	void AnimationIdle();

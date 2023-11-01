@@ -12,12 +12,12 @@ const U32 LexDict::mask_ch[26]={
 
 LexDict::LexDict(U8 *p, U32 cb, U8 *p2, U32 cb2) {
 	// Load text blobs, parse into words, create maskMatch.
+	nEntry = 1; // 0 is illegal entry index
 	nMax=1024;
 	dictionary=new U8*[nMax];
 	maskMatch=new U32[nMax];
 	sEntry=0;
 
-	nEntry=1; // 0 is illegal entry index
 	U8 *pEnd=p+cb;
 	while (p < pEnd) {
 		MakeRoom();

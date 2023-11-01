@@ -13,7 +13,7 @@
 #include "LexSkins.h"
 #include "Random.h"
 
-char Lexicon::aChDist[]="aaaaaaaaabbccddddeeeeeeeeeffggghhiiiiiiiiijkllllmmnnnnnnooooooooqqprrrrrrssssttttttuuuuvvwwxyyz";
+char Lexicon::aChDist[]="aaaaaaaaabbccddddeeeeeeeeeffggghhiiiiiiiiijkllllmmnnnnnnoooooooopqqrrrrrrssssttttttuuuuvvwwxyyz";
 U32 Lexicon::nDist;
 
 Lexicon::Lexicon(Configuration& _config, U8 *pWords, U32 cb, U8 *_pBonusList, U32 _cbBonusList, BOOL _bRandomBonus, Coord _size, U32 _cbWordMin)
@@ -41,14 +41,16 @@ void Lexicon::FillBoard() {
 	S32 cCh=0;
 
 	// Always put bonus word letters on board
-	U32 iEntry = iBonus;
+	U32 iEntry;
+	const U8 *pWord = dictionary.GetIBonus(iBonus);
 
 	while (cCh < size.x * size.y - max(size.x, size.y)) {
-		const U8 *pWord=dictionary.Entry(iEntry); // first time is bonus word
-		iEntry = Random::Value(dictionary.GetNWord()); // Next word
-		U32 cb=dictionary.WordLen(pWord);
+		U32 cb = dictionary.WordLen(pWord);
 		memmove(&aCh[cCh], pWord, cb);
 		cCh += cb;
+
+		iEntry = Random::Value(dictionary.GetNWord()); // Next word
+		pWord = dictionary.Entry(iEntry);
 	}
 	// Fill out tail of aCh with random chars
 	while (cCh < size.x * size.y)
