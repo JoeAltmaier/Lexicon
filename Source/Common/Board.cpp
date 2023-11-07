@@ -50,6 +50,8 @@ void Board::Event(EventType evt, void *id) {
 		{
 		SwapTiles* swap = (SwapTiles*)id;
 		Swap(swap->tileA, swap->tileB, config.IsShuffle());
+		winBoard.StartAnimation(swap->tileA, 0x30);
+		winBoard.StartAnimation(swap->tileB, 0x30);
 
 		delete (SwapTiles*)id;
 		}

@@ -1,4 +1,4 @@
-/* Burner.h -- Burn an SElement (animate then delete)
+/* Glower.h -- Glow an SElement (animate)
  *
  * Copyright (c) Tom Nelson, 2004-2010
  * Copyright (c) Iowa Software Engineering, 2008,2020
@@ -16,40 +16,39 @@
  *
  * Revision History:
  *      1-30-20  JCA  Created
+ *      11-06-23  JCA  Created
  *
 **/
 
 #pragma once
 
-#ifndef __Burner_h
-#define __Burner_h
+#ifndef __Glower_h
+#define __Glower_h
 
 #include "AppDefs.h"
 #include "SElement.h"
 #include "ACircularList_T.h"
 
 
-class Burner {
+class Glower {
 public:
-    typedef ACircularList_T<Burner> Node;
+    typedef ACircularList_T<Glower> Node;
 
 public:
-    Burner(SElement* _pElmt, int _frame=0) : pElmt(_pElmt), bEnabled(false), node(this), frame(_frame) { }
+    Glower(SElement* _pElmt, int _frame = 0) : pElmt(_pElmt), bEnabled(false), node(this), frame(_frame) { }
 
-    bool IsBurnerEnabled() const { return bEnabled; }
-    void EnableBurner(bool _bEnable) { bEnabled = _bEnable; }
+    bool IsGlowerEnabled() const { return bEnabled; }
+    void EnableGlower(bool _bEnable) { bEnabled = _bEnable; }
 
-    bool IsBurning() const { return node.IsLinked(); }
-    void StartBurner(Node& _listBurner, int _frameTo = 20);
-    bool StepBurner();
+    bool IsGlowing() const { return node.IsLinked(); }
+    void StartGlower(Node& _listGlower, int _frameTo = 20);
+    bool StepGlower();
 
-    Burner* NextBurner() const { return node.NextElement(); }
-    void LinkLastToBurn(Node& _list) { _list.LinkPrev(node); }
-    void UnlinkBurner() { node.Unlink(); }
+    Glower* NextGlower() const { return node.NextElement(); }
+    void LinkLastToGlow(Node& _list) { _list.LinkPrev(node); }
+    void UnlinkGlower() { node.Unlink(); }
 
-protected:
-    virtual U8 GetGlow() = 0;
-    void Blend(TBitmap& _bmCanvas, const TBitmap& _bmDissolve, const CRect& _rcTile, const CRect& _rcElmt, const CRect& _rcClip);
+    virtual void SetGlow(U8) = 0;
 
 private:
     SElement* pElmt;
@@ -59,5 +58,6 @@ private:
     int frameTo;
 };
 
-#endif      // __Burner_h
+#endif      // __Glower_h
 
+#pragma once

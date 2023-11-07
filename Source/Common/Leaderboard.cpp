@@ -80,8 +80,6 @@ void Leaderboard::Start()
 
 void Leaderboard::OnFindLeaderboard(LeaderboardFindResult_t* pFindLeaderboardResult, bool bIOFailure)
 {
-	Report("OnFindLeaderboard");
-
 	// see if we encountered an error during the call
 	if (!pFindLeaderboardResult->m_bLeaderboardFound || bIOFailure)
 		return;
@@ -102,8 +100,6 @@ void Leaderboard::OnFindLeaderboard(LeaderboardFindResult_t* pFindLeaderboardRes
 //-----------------------------------------------------------------------------
 void Leaderboard::OnLeaderboardDownloadEntries(LeaderboardScoresDownloaded_t* pLeaderboardScoresDownloaded, bool bIOFailure)
 {
-	Report("DownloadEntries");
-
 	// leaderboard entries handle will be invalid once we return from this function. Copy all data now.
 	m_nLeaderboardEntries = pLeaderboardScoresDownloaded->m_cEntryCount;
 	if (m_nLeaderboardEntries > k_nMaxLeaderboardEntries)
@@ -168,7 +164,7 @@ void Leaderboard::Rebuild()
 		text += SteamUserStats()->GetLeaderboardName(m_hSteamLeaderboard);
 
 		if (m_eLeaderboardData == k_ELeaderboardDataRequestGlobal)
-			text += ", Top " + m_nLeaderboardEntries;
+			text += ", Top";
 		else if (m_eLeaderboardData == k_ELeaderboardDataRequestGlobalAroundUser)
 			text += ", Around User";
 		else if (m_eLeaderboardData == k_ELeaderboardDataRequestFriends)

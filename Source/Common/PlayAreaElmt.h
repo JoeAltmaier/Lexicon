@@ -73,6 +73,7 @@ public:
 	void SetScore(U32 score);
 	void SetClock(U32 clock) { elmtClock.SetFrame(clock); }
 	void StartAnimation(const Coord& cd) { elmtTileGrid.StartAnimation(cd); }
+	void StartAnimation(const Coord& cd, U8 glow) { elmtTileGrid.StartAnimation(cd, glow); }
 	void StartAnimation(const Coord& cdAt, const Coord& cdTo) { elmtTileGrid.StartAnimation(cdAt, cdTo); }
 	void AnimationIdle() { elmtTileGrid.AnimationIdle(); }
 	void LevelBonus(U32 bOn) { elmtLevelBonus.SetItem(!bOn); }

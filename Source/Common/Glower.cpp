@@ -1,4 +1,4 @@
-/* Burner.cpp -- Burn an SElement
+/* Glower.cpp -- Burn an SElement
  *
  * Copyright (c) Tom Nelson, 2004-2010
  * Copyright (c) Iowa Software Engineering, 2008,2020
@@ -19,26 +19,15 @@
  *
 **/
 
-#include "Burner.h"
+#include "Glower.h"
 
-void Burner::StartBurner(Node& _listBurner, int _frameTo) {
-	LinkLastToBurn(_listBurner);
+void Glower::StartGlower(Node& _listGlower, int _frameTo) {
+	LinkLastToGlow(_listGlower);
 	frameTo = _frameTo;
 	frame = 0;
-	EnableBurner(true);
+	EnableGlower(true);
 }
 
-bool Burner::StepBurner() { frame++; if (frame >= frameTo) { UnlinkBurner(); return false; }  return true; }
+bool Glower::StepGlower() { frame++; if (frameTo) SetGlow(127 + 128 * frame / frameTo);  if (frame >= frameTo) { UnlinkGlower(); return false; } return true; }
 
-// This Blend serves for all the animations. Can't have more than one.
-void Burner::Blend(TBitmap& _bmCanvas, const TBitmap& _bmDissolve, const CRect& _rcTile, const CRect& _rcElmt, const CRect& _rcClip)
-{
-	CRect rcFrame(_rcTile);
-	rcFrame.MoveToY(rcFrame.top + frame * _rcTile.Height());
-	U8 glow = GetGlow();
-	if (glow)
-		_bmCanvas.BlendAlphaPercentFrom(_rcElmt, glow, _bmDissolve, rcFrame, _rcClip);
-	else
-		_bmCanvas.BlendFrom(_bmDissolve, rcFrame, _rcElmt, _rcClip);
-}
 

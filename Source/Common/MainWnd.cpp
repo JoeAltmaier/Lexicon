@@ -102,17 +102,17 @@ int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CRect rcWnd = CRect(CPoint(ptWnd + CSize(10,20)), svLex.svimgBackground.rect.Size());
 
 	pWinStart = new WinStart(*this);
-	pWinStart->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Start"), (WS_VISIBLE | WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd, NULL, 0);
+	pWinStart->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Start"), (WS_VISIBLE | WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd, this, 0);
 	pWinStart->ShowWindow(SW_SHOW);
 	pWinStart->UpdateWindow();
 
 	pWinConfig = new WinConfig(*this);
-	pWinConfig->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Select"), ( WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd, NULL, 0);
+	pWinConfig->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Select"), ( WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd, this, 0);
 	pWinConfig->ShowWindow(SW_HIDE);
 	pWinConfig->UpdateWindow();
 
 	pWinHelp = new WinHelpAbout(*this, svLex.svtextHelp.pString);
-	pWinHelp->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Help"), (WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd , NULL, 0);
+	pWinHelp->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Help"), (WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd , this, 0);
 	pWinHelp->ShowWindow(SW_HIDE);
 	pWinHelp->UpdateWindow();
 
@@ -267,6 +267,12 @@ void MainWnd::StartAnimation(const Coord& cd)
 {
 	// A letter is burned. 
 	elmtPlay.StartAnimation(cd);
+}
+
+void MainWnd::StartAnimation(const Coord& cd, U8 glow)
+{
+	// A letter is dropped. 
+	elmtPlay.StartAnimation(cd,glow);
 }
 
 void MainWnd::StartAnimation(const Coord& cdAt, const Coord& cdTo)

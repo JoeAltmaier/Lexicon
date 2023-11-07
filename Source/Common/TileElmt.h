@@ -31,12 +31,13 @@
 #include "STextBox.h"
 #include "Slider.h"
 #include "Burner.h"
+#include "Glower.h"
 
 #include "TBitmap.h"
 #include "ACircularList_T.h"
 
 
-class CLASS_ABASE3(TileElmt, public, SElement, public, Slider, public, Burner)
+class CLASS_ABASE4(TileElmt, public, SElement, public, Slider, public, Burner, public, Glower)
 public:
 
 	class Params {	// Tile create parameters
@@ -55,7 +56,7 @@ public:
 	typedef ACircularList_T<TileElmt> Node;
 
 public:
-	TileElmt() : Slider(this), Burner(this), pChain(nullptr),bNoSwap(false),node(this),iTile(0),rcBmTile(0,0,0,0),nSpeed(2){ }
+	TileElmt() : Slider(this), Burner(this), Glower(this), pChain(nullptr),bNoSwap(false),node(this),iTile(0),rcBmTile(0,0,0,0),alpha(255), nSpeed(2) { }
 	~TileElmt()	{ }
 
 	Params GetParams() const			{ return Params(pChain, iTile, 0, rcBmTile, pBmTiles, pBmDissolve, bNoSwap); }
@@ -77,6 +78,8 @@ protected://SFC
 	virtual void OnDestroy() override;
 
 	virtual void OnBlend(TBitmap &bmCanvas, const CRect &_rcWnd, const CRect &_rcClip) override;
+	U8 GetGlow() { return ((U16)alpha) * 100 / 255; }
+	virtual void SetGlow(U8 _alpha) override { alpha = _alpha; }
 
 private:
 	CPoint ptCenter;
@@ -86,6 +89,7 @@ private:
 	CRect rcBmTile;
 	const TBitmap* pBmTiles;
 	const TBitmap* pBmDissolve;
+	U8 alpha;
 
 	int nSpeed;
 	CPoint ptHome;		// Home position when moving

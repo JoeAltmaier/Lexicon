@@ -25,12 +25,12 @@
 #include "SWnd.h"
 #include "resource1.h"
 #include "Random.h"
-//#include "LexSkins.h"
 
 // 50ms is 20 fps, 33ms is ~30 fps, 20ms is 50 fps , 16.7ms is ~60 fps
 #define TICKSLIDE	30
 #define TICKBURN	70
 #define TICKFLOAT   30
+#define TICKGLOW    20
 #define MAXCOL		8
 #define MAXROW		8
 
@@ -197,6 +197,12 @@ void TileGridElmt::StartAnimation(const Coord& cd)
 	if (pElmtTile) BurnTileElmt(pElmtTile, nFrameBurn);
 }
 
+void TileGridElmt::StartAnimation(const Coord& cd, U8 glow)
+{
+	TileElmt* pElmtTile = TileAt(CPoint(cd.x * sizeTile.cx, cd.y * sizeTile.cy));
+	if (pElmtTile) GlowTileElmt(pElmtTile, glow);
+}
+
 void TileGridElmt::StartAnimation(const Coord& cdAt, const Coord& cdTo)
 {
 	TileElmt* pElmtTile = TileAt(CPoint(cdAt.x * sizeTile.cx, cdAt.y * sizeTile.cy));
@@ -282,6 +288,7 @@ void TileGridElmt::Release(TileElmt* pElmtTile)
 
 		// lParam is ptr to double cell coord for swap
 		NotifyParent(notifyRELEASE, (LPARAM)new SwapTiles(Coord(ptElmt.x / pElmtTile->Width(), ptElmt.y / pElmtTile->Height()), Coord(ptElmtSwap.x / pElmtUnder->Width(), ptElmtSwap.y / pElmtUnder->Height())));
+		// This comes back to us as StartAnimation
 	}
 
 	floaters.MakeFloatersTopmost();
@@ -423,6 +430,27 @@ void TileGridElmt::OnTimerBurn(Timer* _pTimer)
 		timerBurn.Start(TICKBURN);
 }
 
+void TileGridElmt::GlowTileElmt(Glower* _pGlower, int _frameTo)
+{
+	_pGlower->StartGlower(listGlower, _frameTo);
+
+	timerGlow.Start(TICKGLOW);
+}
+
+void TileGridElmt::OnTimerGlow(Timer* _pTimer)
+{
+	Glower* pGlowerNext;
+
+	for (Glower* pGlower = FirstGlower(); pGlower != nullptr; pGlower = pGlowerNext) {
+		pGlowerNext = pGlower->NextGlower();
+
+		if (pGlower->StepGlower())
+			((TileElmt*)pGlower)->Invalidate();
+	}
+
+	if (!listGlower.IsEmpty())
+		timerGlow.Start(TICKGLOW);
+}
 void TileGridElmt::LoseAnimation() {
 	bLose = true;
 

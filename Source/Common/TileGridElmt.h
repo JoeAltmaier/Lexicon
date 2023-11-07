@@ -61,7 +61,7 @@ public:
 	typedef TTimerCallbackMethod_T<TileGridElmt> Timer;
 
 public:
-	TileGridElmt() : timerSlide(this, &TileGridElmt::OnTimerSlide), timerBurn(this, &TileGridElmt::OnTimerBurn), timerFloat(this, &TileGridElmt::OnTimerFloat),
+	TileGridElmt() : timerSlide(this, &TileGridElmt::OnTimerSlide), timerBurn(this, &TileGridElmt::OnTimerBurn), timerFloat(this, &TileGridElmt::OnTimerFloat), timerGlow(this, &TileGridElmt::OnTimerGlow),
 		cTiles(0), cCol(0), cRow(0), cFrames(0), bGameOver(false), bMute(false), bPause(false), bLButtonDown(false), pElmtDrag(NULL), floaters(this), apChain(this, &bmTiles, &bmDissolve, sizeTile) { }
 
 	~TileGridElmt() { }
@@ -75,6 +75,7 @@ public:
 	bool IsPauseGame()				{ return bPause; }
 	void FloatScore(const Coord& cd, S32 score, const U8* pWord);
 	void StartAnimation(const Coord& cd);
+	void StartAnimation(const Coord& cd, U8 glow);
 	void StartAnimation(const Coord& cdAt, const Coord& cdTo);
 	void AnimationIdle();
 
@@ -96,6 +97,11 @@ private:
 	Burner* LastBurner() const { return listBurner.PrevElement(); }
 	void PrepareDefaultDissolve();
 	void LoseAnimation();
+
+	void GlowTileElmt(Glower* _pBurner, int _frameTo);
+	void OnTimerGlow(Timer* _pTimer);
+	Glower* FirstGlower() const { return listGlower.NextElement(); }
+	Glower* LastGlower() const { return listGlower.PrevElement(); }
 
 protected://SFC overrides
 	virtual ERC  OnCreate(SCreateStruct &_cs) override;
@@ -128,6 +134,9 @@ private:
 	TBitmap bmDissolve;
 	Timer timerBurn;
 	Burner::Node listBurner;
+
+	Timer timerGlow;
+	Glower::Node listGlower;
 
 	int cTiles;
 	int cRow,cCol;
