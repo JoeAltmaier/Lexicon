@@ -34,6 +34,14 @@ bool Achievement::SetAchievement(const char* pChName) {
 	return SteamUserStats()->SetAchievement(pChName);
 }
 
+bool Achievement::GetStat(const char* pChName, int32 *stat) {
+	return SteamUserStats()->GetStat(pChName, stat);
+}
+
+bool Achievement::SetStat(const char* pChName, int32 stat) {
+	return SteamUserStats()->SetStat(pChName, stat);
+}
+
 bool Achievement::IncStat(const char* pChName) {
 	int32 stat;
 	SteamUserStats()->GetStat(pChName, &stat);

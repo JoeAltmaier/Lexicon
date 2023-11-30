@@ -16,8 +16,8 @@
 char Lexicon::aChDist[]="aaaaaaaaabbccddddeeeeeeeeeffggghhiiiiiiiiijkllllmmnnnnnnoooooooopqqrrrrrrssssttttttuuuuvvwwxyyz";
 U32 Lexicon::nDist;
 
-Lexicon::Lexicon(Configuration& _config, U8 *pWords, U32 cb, U8 *_pBonusList, U32 _cbBonusList, BOOL _bRandomBonus, Coord _size, U32 _cbWordMin)
-: config(_config), size(_size), score(0), dictionary(pWords, cb, _pBonusList, _cbBonusList), cbWordMin(_cbWordMin), pBonusList(_pBonusList), cbBonusList(_cbBonusList), bRandomBonus(_bRandomBonus), iBonus(0), state(PLAY_IDLE), cLevelsConsecutive(0), cLevelsOneGame(0), cBonusWords(0)
+Lexicon::Lexicon(Configuration& _config, U8 *pWords, U32 cb, U8 *_pBonusList, U32 _cbBonusList, Coord _size, U32 _cbWordMin)
+: config(_config), size(_size), score(0), dictionary(pWords, cb, _pBonusList, _cbBonusList), cbWordMin(_cbWordMin), iBonus(0),bBonusUsed(false), state(PLAY_IDLE), cLevelsConsecutive(0), cLevelsOneGame(0), cBonusWords(0)
 {
 	board=new U8[size.x * size.y+1];
 	board[size.x * size.y]=0;
@@ -154,39 +154,6 @@ void Lexicon::LevelEnd(bool _bQuit) {
 		cLevelsConsecutive = 0;
 
 	Event(EGameOver);
-}
-
-void Lexicon::ChooseBonusWord() {
-	bBonusUsed=false;
-
-	U32 nBonus=dictionary.GetNBonus();
-	if (nBonus) {
-		// Word from configured bonus list
-		if (bRandomBonus)
-			iBonus=Random::Value(dictionary.GetNBonus());
-		else {
-			iBonus = (iBonus + 1) % dictionary.GetNBonus();
-			if (iBonus == 0) // did the whole list; starting over!
-				Event(EAchieve, "LEXICON_BONUSLIST");
-		}
-
-		Event(EBonusWord, (void*)dictionary.GetIBonus(iBonus));
-	
-	} else {
-		// Random word from regular dictionary
-		BOOL bOk=false;
-		const U8 *pWord;
-		while (!bOk) {
-			iBonus=Random::Value(dictionary.GetNWord());
-
-			pWord=dictionary.Entry(iBonus);
-			S32 cbWord=dictionary.WordLen(pWord);
-			bOk=(cbWord >= cbWordMin && cbWord <= size.x);
-		}
-
-		Event(EBonusWord, (void*)pWord);
-	}
-
 }
 
 BOOL Lexicon::Swap(const Coord &c1, const Coord &c2, BOOL bNeighbor) {
@@ -383,7 +350,7 @@ void Lexicon::Match() {
 	// Choose new bonus word
 	if (bBonusUsed) {
 		Event(EBonusUsed);
-		Event(EStat, "LEXICON_BONUSWORD");
+		bBonusUsed = false;
 	}
 }
 

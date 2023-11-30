@@ -45,7 +45,9 @@ int  WinConfig::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	font.LoadLogFont(&logfont, 0);
 	selectSkin.Create(0, &font, TColor(0), TColor(0xFF, 0, 0xFF), SElement::esVISIBLE, svLex.svrectSkinsBox.rect, this, 0);
 
-	selectSkin.AddString(TEXT("Rosewood"));
+	selectSkin.AddString(TEXT("Holiday"));
+	selectSkin.AddString(TEXT("Summer Fun"));
+	selectSkin.SetCurSel(0);
 	selectSkin.SetFocus();
 
 	selectDict.Create(0, &font, TColor(0), TColor(0xFF, 0, 0xFF), SElement::esVISIBLE, svLex.svrectDictsBox.rect, this, 0);

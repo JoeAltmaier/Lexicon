@@ -40,8 +40,6 @@ class Lexicon {
 
 	S32 cbWordMin;
 
-	U8 *pBonusList;
-	U32 cbBonusList;
 	U32 iBonus;
 	BOOL bRandomBonus;
 	BOOL bBonusUsed;
@@ -63,7 +61,7 @@ protected:
 	Configuration& config;
 
 public:
-	Lexicon(Configuration &_config, U8 *_pWords, U32 _cb, U8 *_pBonusList, U32 _cbBonusList, BOOL _bBonusRandom, Coord _size, U32 _cbWordMin);
+	Lexicon(Configuration &_config, U8 *_pWords, U32 _cb, U8 *_pBonusList, U32 _cbBonusList, Coord _size, U32 _cbWordMin);
 
 	void FillBoard();
 
@@ -74,7 +72,8 @@ public:
 
 	void ClearMatch();
 	void LevelEnd(bool _bQuit = false);
-	void ChooseBonusWord();
+	void SetBonusWord(U32 _iBonus) { iBonus = _iBonus; }
+//	void ChooseBonusWord();
 	void SetClock() { Event(EClockCredit, (void*)clock); }
 
 	virtual

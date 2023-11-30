@@ -1,4 +1,4 @@
-/* MainWnd.cpp -- SFC Demo Main Window
+/* MainWnd.cpp
  *
  * Copyright (c) Tom Nelson, 2004-2010
  * Copyright (c) Iowa Software Engineering, 2008,2009
@@ -15,6 +15,7 @@
  *
  * Revision History:
  *      1-07-05  TRN  Created
+ *      11-27-23 JCA  Lexicon bonus word here
  *
 **/
 
@@ -60,7 +61,6 @@ int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	MskBase::SetPath("skin\\");
 
-
 	memset(&svLex, 0, sizeof(svLex));
 
 	Random::Initialize();
@@ -73,13 +73,11 @@ int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// Skins?
 	LoadSkin();
 
-	pBoard = new Board(config, *this);
-
 	CRect rcClient;
 
 	GetClientRect(&rcClient);
 	sysMain.Create(SElement::esVISIBLE, rcClient, this);
-	///sysMain.menuSys.AppendToMenu(GetSystemMenu(FALSE));
+	//sysMain.menuSys.AppendToMenu(GetSystemMenu(FALSE));
 
 	GetClientRect(&rcClient);
 	rcClient.left += 10;
@@ -153,11 +151,13 @@ BOOL MainWnd::OnElmtButtonNotify(SButtonControl *_pElmt, int _tEvent, CPoint _pt
 		return true;
 
 	case IDI_NEWBUTTON:
-		pBoard->Event(ENew, NULL); // New game
+		if (pBoard)
+			pBoard->Event(ENew, NULL); // New game
 		return true;
 
 	case IDI_QUITBUTTON:
-		pBoard->Event(EQuit, NULL); // Quit game
+		if (pBoard)
+			pBoard->Event(EQuit, NULL); // Quit game
 		elmtPlay.Quit();
 		return true;
 	}
@@ -203,9 +203,14 @@ void MainWnd::About()
 	dlgAbout.DoModal(); 
 }
 
-void MainWnd::StartGame() { pWinStart->ShowWindow(SW_HIDE);  pBoard->Event(ENew, NULL); }
+void MainWnd::StartGame() {
+	SelectBonusList();
+	pBoard = new Board(config, *this);
+	pWinStart->ShowWindow(SW_HIDE);  
+	pBoard->Event(ENew, NULL); 
+}
 
-void MainWnd::GameOver(U32 score) { pWinStart->UpdateLeaderboards(score); }
+void MainWnd::GameOver(U32 score) { delete pBoard;  pWinStart->UpdateLeaderboards(score); }
 
 void MainWnd::StartSelect() { pWinStart->ShowWindow(SW_HIDE); pWinConfig->ShowWindow(SW_SHOW); pWinConfig->Invalidate(); }
 
@@ -214,10 +219,62 @@ void MainWnd::StartHelp() { pWinStart->ShowWindow(SW_HIDE); pWinHelp->ShowWindow
 void MainWnd::Achieve(const char* pName) { if (achievement.SetAchievement(pName)) achievement.Commit(); }
 void MainWnd::Stat(const char* pName) { if (achievement.IncStat(pName)) achievement.Commit(); }
 void MainWnd::Timer() {
-	if (!bStarted) { bStarted = achievement.Start(); if (bStarted) pWinStart->Start(); }
+	if (!bStarted)
+	{
+		bStarted = achievement.Start(); 
+		if (bStarted) 
+			pWinStart->Start(); 
+	}
+
+	if (bNextBonusWord && bStarted)
+		NextBonusWord();
 }
 
-void MainWnd::ReturnToMainScreen() { pWinConfig->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_HIDE); pWinStart->ShowWindow(SW_SHOW); pWinStart->Invalidate(); }
+void MainWnd::NextBonusWord(bool _bNext)
+{
+	int32 iBonus;
+	if (_bNext)
+	{
+		bNextBonusWord = true;
+		if (achievement.GetStat("LEXICON_BONUSWORD", &iBonus))
+		{
+			iBonus++;
+
+			if (iBonus >= nBonusWord) {
+				Achieve("LEXICON_BONUSLIST");
+				iBonus = 0;
+				if (achievement.SetStat("LEXICON_BONUSWORD", iBonus))
+					achievement.Commit();
+			}
+
+			else
+				if (achievement.IncStat("LEXICON_BONUSWORD"))
+					achievement.Commit();
+
+			bNextBonusWord = false; // Selected; no need to poll
+
+			// Use it in play
+			pBoard->Event(EBonusWord, (void*)iBonus);
+
+			// Display it
+			SetBonusWord(iBonus);
+		}
+	}
+	else {
+		if (achievement.GetStat("LEXICON_BONUSWORD", &iBonus))
+		{
+			// Use it in play
+			pBoard->Event(EBonusWord, (void*)iBonus);
+
+			// Display it
+			SetBonusWord(iBonus);
+		}
+
+	}
+	// else poll again later
+}
+
+void MainWnd::ReturnToMainScreen() { pWinConfig->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_HIDE); pWinStart->ShowWindow(SW_SHOW); pWinStart->Invalidate(); }
 
 void MainWnd::PopulateTiles(U8 *letters)
 {
@@ -237,14 +294,24 @@ void MainWnd::ScoreAnimation(const Coord& cd, const U8* pWord, S32 score, BOOL b
 	elmtPlay.CreateFloater(center, score, pWord);
 }
 
-void MainWnd::SetBonusWord(const U8* _pBonusWord) 
+void MainWnd::SetBonusWord(int iBonus) 
 {
 	// the word is from a wordlist. They are separated with \r
+
+	// Point to bonus word
+	const char* pBonusWord = svtext.pString;
+	while (iBonus) {
+		// Skip to next word
+		pBonusWord = strchr(pBonusWord, '\r') + 1;
+
+		iBonus--;
+	}
+
 	char aWord[16];
-	int cCh = strchr((char*)_pBonusWord, '\r') - (char*)_pBonusWord;
+	int cCh = strchr((char*)pBonusWord, '\r') - (char*)pBonusWord;
 	if (cCh > 0 && cCh < 15)
 	{
-		memcpy(aWord, _pBonusWord, cCh);
+		memcpy(aWord, pBonusWord, cCh);
 		aWord[cCh] = '\0';
 		elmtPlay.SetBonusWord(aWord);
 	}
@@ -291,17 +358,27 @@ void MainWnd::InitializeDictionary() {
 	U8* pText = (U8*)LoadResource(NULL, hrbl);
 	U32 cbText = SizeofResource(NULL, hrbl);
 
+	nBonusWord = 0;
+
 	// Squish out \n's and blank lines (double-\r's)
 	svtext.pString = new char[cbText];
 	svtext.cb = 0;
 	for (U32 iCh = 0; iCh < cbText; iCh++)
 		switch (pText[iCh]) {
-		case 0: return;
+		case 0:
+			if (svtext.pString[svtext.cb - 1] != '\r')
+				nBonusWord++;
+			return;
 		case '\n':
 			break;
-		default:
-			if (pText[iCh] != '\r' || svtext.pString[svtext.cb - 1] != '\r')
+		case '\r':
+			if (svtext.pString[svtext.cb - 1] != '\r') {
 				svtext.pString[svtext.cb++] = tolower(pText[iCh]);
+				nBonusWord++;
+			}
+			break;
+		default:
+			svtext.pString[svtext.cb++] = tolower(pText[iCh]);
 			break;
 		}
 }
@@ -588,6 +665,13 @@ void MainWnd::LoadDictionary(TCHAR* pFileName) {
 
 	// Free compression buffer
 	delete buf;
+}
+
+void MainWnd::SelectBonusList()
+{
+	// Read selectBonus entry if any
+	// Load that file as bonus list
+	// set svLex field to that list
 }
 
 void* MainWnd::LocateResource(_In_     int id, _In_     LPCSTR lpType, _Out_ UINT32* size)

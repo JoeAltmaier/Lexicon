@@ -3,11 +3,9 @@
 #ifndef __LexTypes_h
 #define __LexTypes_h
 
-//#include "SimpleTypes.h"
 #include "AppAfx.h"
 
 #include <cstdint>
-//#include "stdafx.h"
 
 typedef uint8_t U8;
 typedef int16_t S16;
@@ -15,7 +13,7 @@ typedef uint16_t U16;
 typedef int32_t S32;
 typedef uint32_t U32;
 
-typedef enum { ENextLevel, ELetterNew, ELetterUsed, EClockCredit, EQuit, ENew, EPause, EMute, EMoveTile, ETileDropped, ESwap, EDiscard, EStill, ETilesBurned, EScore, EScoreUpdate, EBonusWord, EBonusUsed, EBestWord, EBoardExhausted, EBoardImpossible, EWinComplete, EMainWindow, ELevelBonus, EGameOver, EAchieve, EStat
+typedef enum { ENextLevel, ELetterNew, ELetterUsed, EClockCredit, EQuit, ENew, EPause, EMute, EMoveTile, ETileDropped, ESwap, EDiscard, EStill, ETilesBurned, EScore, EScoreUpdate, EBonusWord, EBonusUsed, EBestWord, EBoardExhausted, EBoardImpossible, EWinComplete, EMainWindow, ELevelBonus, EGameOver, EAchieve
 } EventType;
 
 typedef enum { NLeft, NRight, NTop, NBottom, NNot } NeighborType;

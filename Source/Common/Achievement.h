@@ -28,6 +28,8 @@ public:
 	bool Start();
 
 	bool SetAchievement(const char *);
+	bool GetStat(const char*, int32*);
+	bool SetStat(const char*, int32);
 	bool IncStat(const char*);
 	void Commit();
 

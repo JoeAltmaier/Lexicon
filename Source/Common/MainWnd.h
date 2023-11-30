@@ -40,7 +40,7 @@ class WinHelpAbout;
 
 class MainWnd : public SWnd {
 public:
-	MainWnd(): config(HKEY_CURRENT_USER, TEXT("Software\\Iowa Software Design\\Lexicon")), pSkinLoader(NULL), bStarted(false) { }
+	MainWnd(): config(HKEY_CURRENT_USER, TEXT("Software\\Iowa Software Design\\Lexicon")), pBoard(NULL), pSkinLoader(NULL), bStarted(false), bNextBonusWord(false) { }
 
 	virtual ~MainWnd() { }
 
@@ -50,7 +50,7 @@ public:
 	void Time(U32 cTick) { elmtPlay.SetClock(cTick); } // from board, to clock element
 	void ScoreAnimation(const Coord& cd, const U8* pWord, S32 score, BOOL bHoriz);
 	void SetScore(U32 score) { elmtPlay.SetScore(score); }
-	void SetBonusWord(const U8* _pBonusWord);
+	void SetBonusWord(int _iBonus);
 	void SetBestWord(const U8* _pBestWord);
 	void AddAnimation(const Coord& cd) {}
 	void StartAnimation(const Coord& cd);
@@ -66,6 +66,7 @@ public:
 	void Achieve(const char*);
 	void Stat(const char*);
 	void Timer();
+	void NextBonusWord(bool _bNext = false);
 
 // These aren't referenced yet!
 //	void StopAnimation(Animation&);
@@ -89,6 +90,7 @@ private:
 	TCHAR* LoadSkin();
 	void LoadSkinDefaults();
 	void LoadDictionary(TCHAR* pFileName);
+	void SelectBonusList();
 	void* LocateResource(_In_     int id, _In_     LPCSTR lpType, _Out_ UINT32 *size);
 
 public:
@@ -109,6 +111,8 @@ public:
 
 	Achievement achievement;
 	bool bStarted;
+	bool bNextBonusWord;
+	int nBonusWord;
 
 protected:
 	DECLARE_MESSAGE_MAP()

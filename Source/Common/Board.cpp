@@ -13,8 +13,10 @@
 #include "Resource.h"
 #include "MainWnd.h"
 
+#define FRAMESGLOW 0x30
+
 Board::Board(Configuration &_config, MainWnd &_winBoard)
-	: Lexicon(_config, (U8*)svLex.svdictWordList.pBytes, svLex.svdictWordList.cb, (U8*)svLex.svtextBonusList.pString, svLex.svtextBonusList.cb, svLex.svboolBonusRandom.b, Coord(svLex.svrectTilesInBoard.rect.right, svLex.svrectTilesInBoard.rect.bottom), svLex.svscalarWordLengthMin.u32), 
+	: Lexicon(_config, (U8*)svLex.svdictWordList.pBytes, svLex.svdictWordList.cb, (U8*)svLex.svtextBonusList.pString, svLex.svtextBonusList.cb, Coord(svLex.svrectTilesInBoard.rect.right, svLex.svrectTilesInBoard.rect.bottom), svLex.svscalarWordLengthMin.u32), 
 	winBoard(_winBoard)
 {
 }
@@ -36,7 +38,7 @@ void Board::Event(EventType evt, void *id) {
 		ResetScore();
 	case ENextLevel:
 		ClearMatch();
-		ChooseBonusWord();
+		winBoard.NextBonusWord();
 		FillBoard(); // Fill out the letter grid from valid words
 		SetClock();
 		winBoard.PopulateTiles(Letters()); // Give the letter grid to the window to display
@@ -50,8 +52,8 @@ void Board::Event(EventType evt, void *id) {
 		{
 		SwapTiles* swap = (SwapTiles*)id;
 		Swap(swap->tileA, swap->tileB, config.IsShuffle());
-		winBoard.StartAnimation(swap->tileA, 0x30);
-		winBoard.StartAnimation(swap->tileB, 0x30);
+		winBoard.StartAnimation(swap->tileA, FRAMESGLOW);
+		winBoard.StartAnimation(swap->tileB, FRAMESGLOW);
 
 		delete (SwapTiles*)id;
 		}
@@ -100,7 +102,7 @@ void Board::Event(EventType evt, void *id) {
 		break;
 
 	case EBonusWord:
-		winBoard.SetBonusWord((const U8*)id);
+		SetBonusWord((U32)id);
 		break;
 
 	case ELevelBonus:
@@ -108,7 +110,7 @@ void Board::Event(EventType evt, void *id) {
 		break;
 
 	case EBonusUsed:
-		ChooseBonusWord();
+		winBoard.NextBonusWord(true);
 		break;
 
 	case EBestWord:
@@ -138,10 +140,6 @@ void Board::Event(EventType evt, void *id) {
 
 	case EAchieve:
 		winBoard.Achieve((const char *)id);
-		break;
-
-	case EStat:
-		winBoard.Stat((const char*)id);
 		break;
 	}
 }

@@ -44,6 +44,7 @@ private:
 	MainWnd& winBoard;
 
 	SListBox selectGame;
+//	SListBox selectBonusList;
 
 	CRect rectScores;
 
