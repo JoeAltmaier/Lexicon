@@ -1,4 +1,4 @@
-// WinStart.cpp - Main menu on start
+// StartElmt.cpp - Main menu on start
 /*
  * Copyright (c) 2002 by
  *      Joe Altmaier  Derelict Software
@@ -8,36 +8,32 @@
  *
 **/
 
-#include "WinStart.h"
+#include "StartElmt.h"
 #include <mmsystem.h>
 #include "Resource1.h"
 #include "LexSkins.h"
-
-
-BEGIN_MESSAGE_MAP(WinStart, SWnd)
-	ON_WM_CREATE()
-	ON_WM_SIZE()
-END_MESSAGE_MAP()
-
+#include "MainWnd.h"
 
 char* leaderboards[] = { "Best Board", NULL };
 
 
-WinStart::WinStart(MainWnd& _winBoard)
-	: winBoard(_winBoard), leaderboard(leaderboards, this, &LeaderboardCallback::OnLeaderboardCallback)
+StartElmt::StartElmt()
+	: leaderboard(leaderboards, this, &LeaderboardCallback::OnLeaderboardCallback)
 {
 }
 
 
-WinStart::~WinStart() {
-}
-
-int  WinStart::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int  StartElmt::OnCreate(SCreateStruct& _cs)
 {
 	ERC erc;
 
-	if ((erc = SWnd::OnCreate(lpCreateStruct)) == -1)
+	if ((erc = BaseClass::OnCreate(_cs)) != OK)
 		return erc;
+
+	bmBackground.LoadDataImage((const char*)svLex.svimgMain.pBytes, svLex.svimgMain.cb);
+	if (!elmtBackground.Create(esVISIBLE, bmBackground, 1, CPoint(0, 0), this))
+		return ERR;	//*FIX* These old Msk classes in AppSkin.h need a lot of work.
+
 
 	LOGFONT logfont;
 	memset((char*)&logfont, 0, sizeof(logfont));
@@ -49,12 +45,9 @@ int  WinStart::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	selectGame.Create(0, &font, TColor(0), TColor(0xFF, 0, 0xFF), SElement::esVISIBLE, svLex.svrectGameModeBox.rect, this, 0);
 
 	selectGame.AddString(TEXT("Crash"));
-	selectGame.SetSel(winBoard.config.IsShuffle() ? (winBoard.config.IsClocked() ? 1 : 0) : 2, true);
+	selectGame.SetSel(((MainWnd*)GetParentWnd())->config.IsShuffle() ? (((MainWnd*)GetParentWnd())->config.IsClocked() ? 1 : 0) : 2, true);
 
 	elmtScores.Create(SElement::esVISIBLE, &font, TColor(0), svLex.svrectHighScoresBox.rect, this);
-
-	bmBackground.Create(svLex.svimgBackground.rect.Size(), 0);
-	bmBackground.LoadDataImage((const char*)svLex.svimgMain.pBytes, svLex.svimgMain.cb);
 
 	if (!elmtBtPlay.Create(SElement::esVISIBLE | SButton::bsPUSHSIMPLE, (const char*)svLex.svimgMainPlay.pBytes, (int)svLex.svimgMainPlay.cb, svLex.svrectMainPlay.rect, this, IDB_MAIN_PLAY))
 		return ERR;
@@ -68,61 +61,61 @@ int  WinStart::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-BOOL WinStart::OnElmtButtonNotify(SButtonControl* _pElmt, int _tEvent, CPoint _ptClick)
+BOOL StartElmt::OnButtonNotify(SButtonControl* _pElmt, int _tEvent, CPoint _ptClick)
 {
 	switch (_pElmt->GetId()) {
 	case IDB_MAIN_PLAY:
 		// Start a game
 		Process();
+		MoveOrderBottom();
 
 		SetCursor(LoadCursor(NULL, IDC_WAIT));
-		winBoard.StartGame();
-		ShowWindow(SW_HIDE);
+		((MainWnd*)GetParentWnd())->StartGame();
 		SetCursor(LoadCursor(NULL, IDC_ARROW));
 
 		return true;
 	case IDB_MAIN_EXIT:
 		Process();
-		winBoard.Exit();
+		((MainWnd*)GetParentWnd())->Exit();
 		return true;
 	case IDB_MAIN_CONFIG:
 		Process();
-		winBoard.StartConfig();
+		((MainWnd*)GetParentWnd())->StartConfig();
 		return true;
 	case IDB_MAIN_HELP:
 		Process();
-		winBoard.StartHelp();
+		((MainWnd*)GetParentWnd())->StartHelp();
 		return true;
 	}
 
 	return false;
 }
 
-BOOL WinStart::OnElmtLButtonDown(UINT _nFlags, CPoint _point)
+BOOL StartElmt::OnLButtonDown(UINT _nFlags, CPoint _point)
 {
 	if (elmtScores.GetRect().PtInRect(_point))
 		leaderboard.Rotate();
 
-	return SWnd::OnElmtLButtonDown(_nFlags, _point);
+	return TRUE;
 }
 
-void WinStart::Process() {
-	winBoard.config.SetClocked(false);
+void StartElmt::Process() {
+	((MainWnd*)GetParentWnd())->config.SetClocked(false);
 
 	U32 iGame = selectGame.GetCurSel();
 	if (iGame == 0)
-		winBoard.config.SetGame(Configuration::GAME_SHUFFLE);
+		((MainWnd*)GetParentWnd())->config.SetGame(Configuration::GAME_SHUFFLE);
 
 	else if (iGame == 1) {
-		winBoard.config.SetGame(Configuration::GAME_SHUFFLE);
-		winBoard.config.SetClocked(true);
+		((MainWnd*)GetParentWnd())->config.SetGame(Configuration::GAME_SHUFFLE);
+		((MainWnd*)GetParentWnd())->config.SetClocked(true);
 	}
 
 	else
-		winBoard.config.SetGame(Configuration::GAME_CRASHANDBURN);
+		((MainWnd*)GetParentWnd())->config.SetGame(Configuration::GAME_CRASHANDBURN);
 }
 
-BOOL WinStart::OnElmtListBox(SListBox* _pElmt, int _nNotification)
+BOOL StartElmt::OnListBox(SListBox* _pElmt, int _nNotification)
 {
 	if (_pElmt == &selectGame)
 	{
@@ -133,19 +126,14 @@ BOOL WinStart::OnElmtListBox(SListBox* _pElmt, int _nNotification)
 	return FALSE;
 }
 
-BOOL WinStart::OnTextboxNotify(STextboxControl* _pElmt, int _nCode, CPoint _ptClick) 
+BOOL StartElmt::OnTextboxNotify(STextboxControl* _pElmt, int _nCode, CPoint _ptClick) 
 {
 	return FALSE;
 }
 
-void WinStart::OnLeaderboardCallback(std::string& text)
+void StartElmt::OnLeaderboardCallback(std::string& text)
 {
 	elmtScores.SetText(text.c_str());
 }
 
-VOID WinStart::OnBlend(TBitmap& _bmCanvas, const CRect& _rcElmt, const CRect& _rcClip)
-{
-	_bmCanvas.CopyFrom(bmBackground, svLex.svimgBackground.rect, svLex.svimgBackground.rect, svLex.svimgBackground.rect, 0, 0);
-}
-
-void WinStart::Start() { leaderboard.Start(); }
+void StartElmt::Start() { leaderboard.Start(); }

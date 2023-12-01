@@ -26,8 +26,8 @@
 #include "Random.h"
 #include "Resource1.h"
 #include "VersionString.h"
-#include "WinStart.h"
-#include "WinConfig.h"
+#include "StartElmt.h"
+#include "ConfigElmt.h"
 #include "WinHelpAbout.h"
 
 BEGIN_MESSAGE_MAP(MainWnd, SWnd)
@@ -99,20 +99,16 @@ int MainWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CRect rcWnd = CRect(CPoint(ptWnd + CSize(10,20)), svLex.svimgBackground.rect.Size());
 
-	pWinStart = new WinStart(*this);
-	pWinStart->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Start"), (WS_VISIBLE | WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd, this, 0);
-	pWinStart->ShowWindow(SW_SHOW);
-	pWinStart->UpdateWindow();
+	if ((erc = elmtHelp.Create(SElement::esVISIBLE, rcClient, this)) != OK)
+		return erc;
 
-	pWinConfig = new WinConfig(*this);
-	pWinConfig->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Select"), ( WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd, this, 0);
-	pWinConfig->ShowWindow(SW_HIDE);
-	pWinConfig->UpdateWindow();
+	if ((erc = elmtStart.Create(SElement::esVISIBLE, rcClient, this)) != OK)
+		return erc;
 
-	pWinHelp = new WinHelpAbout(*this, svLex.svtextHelp.pString);
-	pWinHelp->CreateEx(WS_EX_TOPMOST, _T(APPWNDCLASS), _T("Help"), (WS_POPUP | WS_SYSMENU | WS_MINIMIZEBOX), rcWnd , this, 0);
-	pWinHelp->ShowWindow(SW_HIDE);
-	pWinHelp->UpdateWindow();
+	if ((erc = elmtConfig.Create(SElement::esVISIBLE, rcClient, this)) != OK)
+		return erc;
+
+	elmtConfig.SetFocus();
 
 	ReturnToMainScreen();
 
@@ -188,6 +184,10 @@ ERC MainWnd::OnElmtNotify(SElement* _pElmt, UINT _nCode, WPARAM _wParam, LPARAM 
 		delete (Coord*)_lParam;
 		break;
 
+	case IDB_SELECT_CANCEL:
+		ReturnToMainScreen();
+		break;
+
 	default:
 		return FALSE;
 	}
@@ -204,17 +204,20 @@ void MainWnd::About()
 }
 
 void MainWnd::StartGame() {
+	elmtStart.MoveOrderBottom();
+	elmtConfig.MoveOrderBottom();
+	elmtHelp.MoveOrderBottom();
+
 	SelectBonusList();
 	pBoard = new Board(config, *this);
-	pWinStart->ShowWindow(SW_HIDE);  
 	pBoard->Event(ENew, NULL); 
 }
 
-void MainWnd::GameOver(U32 score) { delete pBoard;  pWinStart->UpdateLeaderboards(score); }
+void MainWnd::GameOver(U32 score) { delete pBoard;  elmtStart.UpdateLeaderboards(score); }
 
-void MainWnd::StartSelect() { pWinStart->ShowWindow(SW_HIDE); pWinConfig->ShowWindow(SW_SHOW); pWinConfig->Invalidate(); }
+void MainWnd::StartConfig() { elmtStart.MoveOrderBottom(); elmtConfig.MoveOrderTop(); }
 
-void MainWnd::StartHelp() { pWinStart->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_SHOW); pWinHelp->Invalidate();  }
+void MainWnd::StartHelp() { elmtStart.MoveOrderBottom(); elmtHelp.MoveOrderTop(); }
 
 void MainWnd::Achieve(const char* pName) { if (achievement.SetAchievement(pName)) achievement.Commit(); }
 void MainWnd::Stat(const char* pName) { if (achievement.IncStat(pName)) achievement.Commit(); }
@@ -223,7 +226,7 @@ void MainWnd::Timer() {
 	{
 		bStarted = achievement.Start(); 
 		if (bStarted) 
-			pWinStart->Start(); 
+			elmtStart.Start();
 	}
 
 	if (bNextBonusWord && bStarted)
@@ -274,7 +277,7 @@ void MainWnd::NextBonusWord(bool _bNext)
 	// else poll again later
 }
 
-void MainWnd::ReturnToMainScreen() { pWinConfig->ShowWindow(SW_HIDE); pWinHelp->ShowWindow(SW_HIDE); pWinStart->ShowWindow(SW_SHOW); pWinStart->Invalidate(); }
+void MainWnd::ReturnToMainScreen() { elmtHelp.MoveOrderBottom(); elmtStart.MoveOrderTop(); }
 
 void MainWnd::PopulateTiles(U8 *letters)
 {

@@ -33,10 +33,12 @@
 #include "MainApp.h"
 #include "Skins.h"
 #include "Achievement.h"
+#include "ConfigElmt.h"
+#include "StartElmt.h"
+#include "HelpElmt.h"
+#include "LexSkins.h"
 
-class WinStart;
-class WinConfig;
-class WinHelpAbout;
+extern SkinValuesLex svLex;
 
 class MainWnd : public SWnd {
 public:
@@ -61,7 +63,7 @@ public:
 	void GameOver(U32 score);
 	void ReturnToMainScreen();
 	void Exit() { exit(0); }
-	void StartSelect();
+	void StartConfig();
 	void StartHelp();
 	void Achieve(const char*);
 	void Stat(const char*);
@@ -105,9 +107,9 @@ public:
 
 	SkinValueDict svdictLoad;
 
-	WinStart* pWinStart;
-	WinConfig* pWinConfig;
-	WinHelpAbout* pWinHelp;
+	StartElmt elmtStart;
+	ConfigElmt elmtConfig;
+	HelpElmt elmtHelp;
 
 	Achievement achievement;
 	bool bStarted;
