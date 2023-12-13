@@ -12,8 +12,6 @@
 #include "resource1.h"
 #include "LexSkins.h"
 
-
-
 int  ConfigElmt::OnCreate(SCreateStruct &_cs)
 {
 	ERC erc;
@@ -34,8 +32,7 @@ int  ConfigElmt::OnCreate(SCreateStruct &_cs)
 	font.LoadLogFont(&logfont, 0);
 	selectSkin.Create(esCAPTURECLICKS | MK_LBUTTON, &font, TColor(0), TColor(0xFF, 0, 0xFF), SElement::esVISIBLE, svLex.svrectSkinsBox.rect, this, 0);
 
-	selectSkin.AddString(TEXT("Holiday"));
-	selectSkin.AddString(TEXT("Summer Fun"));
+	selectSkin.AddString(TEXT("none"));
 	selectSkin.SetCurSel(0);
 	selectSkin.SetFocus();
 
@@ -48,6 +45,9 @@ int  ConfigElmt::OnCreate(SCreateStruct &_cs)
 	if (!elmtBtCancel.Create(SElement::esVISIBLE | SButton::bsPUSHSIMPLE, (const char*)svLex.svimgSelectCancel.pBytes, (int)svLex.svimgSelectCancel.cb, svLex.svrectSelectCancel.rect, this, IDB_SELECT_CANCEL))
 		return ERR;
 
+	// Display available bonus words lists from the cloud
+	bonusList.Start();
+
 	return 0;
 }
 
@@ -55,7 +55,6 @@ BOOL ConfigElmt::OnButtonNotify(SButtonControl* _pElmt, int _tEvent, CPoint _ptC
 {
 	switch (_pElmt->GetId()) {
 	case IDB_SELECT_OK:
-		// Start a game
 		Process();
 
 		// drop thru
@@ -71,15 +70,46 @@ BOOL ConfigElmt::OnButtonNotify(SButtonControl* _pElmt, int _tEvent, CPoint _ptC
 }
 
 void ConfigElmt::Process() {
-
+	int iItem = selectSkin.GetCurSel();
+	uint64_t *pId = (uint64_t*)selectSkin.GetItemDataPtr(iItem);
+	bonusList.DownloadItem(*pId);
 }
 
-BOOL ConfigElmt::OnListBox(SListBox* _pElmt, int _nNotification)
-{ 
-	if (_pElmt == &selectSkin)
+void ConfigElmt::OnBonusListCallback(BonusListCallback::Item*itemList, int nItem)
+{
+	selectSkin.ResetContent();
+
+	for (int iItem = 0; iItem < nItem; iItem++) {
+		selectSkin.AddString(itemList[iItem].desc);
+		BonusListCallback::Item* pItem = new BonusListCallback::Item(itemList[iItem]);
+		selectSkin.SetItemDataPtr(iItem, pItem);
+	}
+}
+
+// A SteamUGC file is available
+void ConfigElmt::OnDownloadCallback(uint64_t id, char *pFolder) {
+	BonusListCallback::Item* pItem = (BonusListCallback::Item*)selectSkin.GetItemDataPtr(selectSkin.GetCurSel());
+	if (id == pItem->id)
 	{
-		return TRUE;
+		// Deliver notification of content of downloaded bonus word list
+
+		char aPath[PATH_MAX];
+		sprintf_s(aPath, "%s\\%s.bwl", pFolder, pItem->name);
+
+		// Read bonus word list
+		FILE* f; 
+		f = fopen(aPath, "rb");
+		if (f)
+		{
+			fseek(f, 0L, SEEK_END);
+			long sz = ftell(f);
+			rewind(f);
+			char* pBWL = new char[sz+1];
+			fread(pBWL, 1, sz, f);
+			pBWL[sz] = 0;
+
+			NotifyParent(notifyBONUSWORDLIST, (LPARAM)pBWL);
+		}
 	}
 
-	return FALSE; 
 }

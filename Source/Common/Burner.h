@@ -34,7 +34,7 @@ public:
     typedef ACircularList_T<Burner> Node;
 
 public:
-    Burner(SElement* _pElmt, int _frame=0) : pElmt(_pElmt), bEnabled(false), node(this), frame(_frame) { }
+    Burner(SElement* _pElmt, int _frame=0) : pElmt(_pElmt), bEnabled(false), node(this), frame(_frame), frameTo(0) { }
 
     bool IsBurnerEnabled() const { return bEnabled; }
     void EnableBurner(bool _bEnable) { bEnabled = _bEnable; }

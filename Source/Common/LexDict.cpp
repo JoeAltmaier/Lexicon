@@ -10,54 +10,17 @@ const U32 LexDict::mask_ch[26]={
 	0x100000, 0x200000
 };
 
-LexDict::LexDict(U8 *p, U32 cb, U8 *p2, U32 cb2) {
-	// Load text blobs, parse into words, create maskMatch.
+LexDict::LexDict(U8 *p, U32 cb) {
+	// Load text blob, parse into words, create maskMatch.
 	nEntry = 1; // 0 is illegal entry index
 	nMax=1024;
-	dictionary=new U8*[nMax];
+	dictionary=new const U8*[nMax];
 	maskMatch=new U32[nMax];
 	sEntry=0;
 
-	U8 *pEnd=p+cb;
-	while (p < pEnd) {
-		MakeRoom();
-
-		dictionary[nEntry]=p;
-		maskMatch[nEntry]=0;
-		U32 cCh=0;
-		while (*p != '\r' && *p != 0) {
-			maskMatch[nEntry] |= mask_ch[tolower(*p) - 'a'];
-			p++;
-			cCh++;
-		}
-		nEntry++;
-		if (cCh > sEntry)
-			sEntry = cCh;
-		p++;
-	}
+	AppendWordList(p, cb);
 
 	iEntryBonusFirst=nEntry;
-
-	pEnd=p2+cb2;
-	while (p2 < pEnd) {
-		MakeRoom();
-
-		dictionary[nEntry]=p2;
-		maskMatch[nEntry]=0;
-		U32 cCh=0;
-		while (*p2 != '\r' && *p2 != 0) {
-			maskMatch[nEntry] |= mask_ch[tolower(*p2) - 'a'];
-			p2++;
-			cCh++;
-		}
-		nEntry++;
-		if (cCh > sEntry)
-			sEntry = cCh;
-		p2++;
-		if (*p2 == '\n')
-			p2++;
-	}
-
 }
 
 LexDict::~LexDict() {
@@ -67,7 +30,7 @@ LexDict::~LexDict() {
 
 void LexDict::MakeRoom() {
 	if (nEntry >= nMax) {
-		U8 **dictNew=new U8*[nMax*2];
+		const U8 **dictNew=new const U8*[nMax*2];
 		U32 *maskNew=new U32[nMax*2];
 		for (U32 i=0; i < nMax; i++) {
 			dictNew[i]=dictionary[i];
@@ -81,8 +44,35 @@ void LexDict::MakeRoom() {
 	}
 }
 
+void LexDict::AppendWordList(const U8* p, U32 cb) {
+	const U8* pEnd = p + cb;
+	while (p < pEnd) {
+		MakeRoom();
+
+		dictionary[nEntry] = p;
+		maskMatch[nEntry] = 0;
+		U32 cCh = 0;
+		while (*p != '\r' && *p != 0) {
+			maskMatch[nEntry] |= mask_ch[tolower(*p) - 'a'];
+			p++;
+			cCh++;
+		}
+		nEntry++;
+		if (cCh > sEntry)
+			sEntry = cCh;
+		p++;
+		if (*p == '\n')
+			p++;
+	}
+}
+
+void LexDict::SetBonusWordList(const U8* p, U32 cb) {
+	nEntry = iEntryBonusFirst; // erase any old bonus word list
+	AppendWordList(p, cb);
+}
+
 const U8 *LexDict::Entry(U32 iEntry) {
-	return dictionary[iEntry];
+	return (iEntry < nEntry)? dictionary[iEntry] :NULL;
 }
 
 U32 *LexDict::Match(U32 mask, U32 iMatch) {

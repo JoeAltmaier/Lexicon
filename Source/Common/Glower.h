@@ -35,7 +35,7 @@ public:
     typedef ACircularList_T<Glower> Node;
 
 public:
-    Glower(SElement* _pElmt, int _frame = 0) : pElmt(_pElmt), bEnabled(false), node(this), frame(_frame) { }
+    Glower(SElement* _pElmt, int _frame = 0) : pElmt(_pElmt), bEnabled(false), node(this), frame(_frame), frameTo(0) { }
 
     bool IsGlowerEnabled() const { return bEnabled; }
     void EnableGlower(bool _bEnable) { bEnabled = _bEnable; }

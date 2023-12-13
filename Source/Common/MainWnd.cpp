@@ -172,6 +172,7 @@ ERC MainWnd::OnElmtNotify(SElement* _pElmt, UINT _nCode, WPARAM _wParam, LPARAM 
 		break;
 
 	case notifyIDLE:
+		if (pBoard)
 		pBoard->Event(ETilesBurned, NULL);
 		break;
 
@@ -182,6 +183,10 @@ ERC MainWnd::OnElmtNotify(SElement* _pElmt, UINT _nCode, WPARAM _wParam, LPARAM 
 	case notifyDISCARD:
 		pBoard->Event(EDiscard, *(Coord*)_lParam);
 		delete (Coord*)_lParam;
+		break;
+
+	case notifyBONUSWORDLIST:
+		SetBonusList((U8*)_lParam, strlen((char*)_lParam));
 		break;
 
 	case IDB_SELECT_CANCEL:
@@ -204,12 +209,14 @@ void MainWnd::About()
 }
 
 void MainWnd::StartGame() {
+	// Expose the main window play area itself
 	elmtStart.MoveOrderBottom();
 	elmtConfig.MoveOrderBottom();
 	elmtHelp.MoveOrderBottom();
 
-	SelectBonusList();
 	pBoard = new Board(config, *this);
+	if (svtext.pString)
+		pBoard->SetBonusWordList((const U8*)svtext.pString, svtext.cb);
 	pBoard->Event(ENew, NULL); 
 }
 
@@ -233,6 +240,35 @@ void MainWnd::Timer() {
 		NextBonusWord();
 }
 
+bool MainWnd::IsBonusList() { return (svtext.pString != NULL); }
+
+void MainWnd::SetBonusList(U8 *pText, U32 cbText) {
+	nBonusWord = 0;
+
+	// Squish out \n's and blank lines (double-\r's)
+	svtext.pString = new char[cbText+1];
+	svtext.cb = 0;
+	for (U32 iCh = 0; iCh < cbText; iCh++)
+		switch (pText[iCh]) {
+		case 0:
+			if (svtext.pString[svtext.cb - 1] != '\r')
+				nBonusWord++;
+			return;
+		case '\n':
+			break;
+		case '\r':
+			if (svtext.pString[svtext.cb - 1] != '\r') {
+				svtext.pString[svtext.cb++] = tolower(pText[iCh]);
+				nBonusWord++;
+			}
+			break;
+		default:
+			svtext.pString[svtext.cb++] = tolower(pText[iCh]);
+			break;
+		}
+
+	svtext.pString[svtext.cb] = 0;
+}
 void MainWnd::NextBonusWord(bool _bNext)
 {
 	int32 iBonus;
@@ -356,34 +392,17 @@ void MainWnd::InitializeDictionary() {
 	void* pData = LoadResource(NULL, hrwl);
 	Decompress((U8*)pData, SizeofResource(NULL, hrwl), (U8**)&svdict.pBytes, (U32*)&svdict.cb);
 
+#if 0
 	// Find bonus word list
 	HRSRC hrbl = FindResource(NULL, MAKEINTRESOURCE(IDD_BONUSLIST), TEXT("DICT"));
 	U8* pText = (U8*)LoadResource(NULL, hrbl);
 	U32 cbText = SizeofResource(NULL, hrbl);
 
-	nBonusWord = 0;
-
-	// Squish out \n's and blank lines (double-\r's)
-	svtext.pString = new char[cbText];
+	SetBonusList(pText, cbText);
+#else
+	svtext.pString = NULL;
 	svtext.cb = 0;
-	for (U32 iCh = 0; iCh < cbText; iCh++)
-		switch (pText[iCh]) {
-		case 0:
-			if (svtext.pString[svtext.cb - 1] != '\r')
-				nBonusWord++;
-			return;
-		case '\n':
-			break;
-		case '\r':
-			if (svtext.pString[svtext.cb - 1] != '\r') {
-				svtext.pString[svtext.cb++] = tolower(pText[iCh]);
-				nBonusWord++;
-			}
-			break;
-		default:
-			svtext.pString[svtext.cb++] = tolower(pText[iCh]);
-			break;
-		}
+#endif
 }
 
 TCHAR* MainWnd::LoadSkin() {

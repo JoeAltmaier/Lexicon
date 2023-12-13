@@ -16,15 +16,18 @@
 #include "SElement.h"
 #include "SFont.h"
 #include "SListBox.h"
+#include "BonusList.h"
 
 #define SELECTBACKGROUNDBUTTON      "IDB_SELECTBACKGROUND"
 #define SELECTOKBUTTON              "IDB_SELECT_OK"
 #define SELECTCANCELBUTTON          "IDB_SELECT_CANCEL"
 
-class CLASS_ABASE(ConfigElmt, public, SElement)
+class CLASS_ABASE2(ConfigElmt, public, SElement, public, BonusListCallback)
 public:
-	ConfigElmt() { }
+	ConfigElmt():bonusList(this) {}
 	~ConfigElmt() { }
+
+	const char* GetBonusListData();
 
 protected://SElement overrides
 	virtual ERC  OnCreate(SCreateStruct& _cs) override;
@@ -32,13 +35,15 @@ protected://SElement overrides
 
 	virtual BOOL OnButtonNotify(SButtonControl* _pElmt, int _tEvent, CPoint _ptClick) override;
 	virtual ERC OnNotify(SElement* _pChild, WPARAM _wParam, LPARAM _lParam) override { return NotifyParent(_wParam, _lParam); }
-	virtual BOOL OnListBox(SListBox* _pElmt, int _nNotification) override;
 
 private:
 	void Done();
 	void Process();
 
 private:
+	virtual void OnBonusListCallback(BonusListCallback::Item *, int nItem) override;
+	virtual void OnDownloadCallback(uint64_t, char*) override;
+
 	SListBox selectSkin;
 	SListBox selectDict;
 
@@ -51,6 +56,7 @@ private:
 
 	MskButton elmtBtOk;
 	MskButton elmtBtCancel;
+	BonusList bonusList;
 };
 
 #endif // _ConfigElmt_h

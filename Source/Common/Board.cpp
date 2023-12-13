@@ -16,7 +16,7 @@
 #define FRAMESGLOW 0x30
 
 Board::Board(Configuration &_config, MainWnd &_winBoard)
-	: Lexicon(_config, (U8*)svLex.svdictWordList.pBytes, svLex.svdictWordList.cb, (U8*)svLex.svtextBonusList.pString, svLex.svtextBonusList.cb, Coord(svLex.svrectTilesInBoard.rect.right, svLex.svrectTilesInBoard.rect.bottom), svLex.svscalarWordLengthMin.u32), 
+	: Lexicon(_config, (U8*)svLex.svdictWordList.pBytes, svLex.svdictWordList.cb, Coord(svLex.svrectTilesInBoard.rect.right, svLex.svrectTilesInBoard.rect.bottom), svLex.svscalarWordLengthMin.u32), 
 	winBoard(_winBoard)
 {
 }
@@ -36,6 +36,7 @@ void Board::Event(EventType evt, void *id) {
 
 	case ENew:
 		ResetScore();
+		[[fallthrough]];
 	case ENextLevel:
 		ClearMatch();
 		winBoard.NextBonusWord();

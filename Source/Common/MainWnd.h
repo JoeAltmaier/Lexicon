@@ -89,6 +89,8 @@ protected://SWnd
 
 private:
 	void InitializeDictionary();
+	void SetBonusList(U8* pText, U32 cbText);
+	bool IsBonusList();
 	TCHAR* LoadSkin();
 	void LoadSkinDefaults();
 	void LoadDictionary(TCHAR* pFileName);

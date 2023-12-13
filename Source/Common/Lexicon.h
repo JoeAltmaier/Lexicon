@@ -61,7 +61,7 @@ protected:
 	Configuration& config;
 
 public:
-	Lexicon(Configuration &_config, U8 *_pWords, U32 _cb, U8 *_pBonusList, U32 _cbBonusList, Coord _size, U32 _cbWordMin);
+	Lexicon(Configuration &_config, U8 *_pWords, U32 _cb, Coord _size, U32 _cbWordMin);
 
 	void FillBoard();
 
@@ -73,7 +73,7 @@ public:
 	void ClearMatch();
 	void LevelEnd(bool _bQuit = false);
 	void SetBonusWord(U32 _iBonus) { iBonus = _iBonus; }
-//	void ChooseBonusWord();
+	void SetBonusWordList(const U8* pCh, U32 cCh);
 	void SetClock() { Event(EClockCredit, (void*)clock); }
 
 	virtual

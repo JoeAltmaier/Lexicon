@@ -16,8 +16,8 @@
 char Lexicon::aChDist[]="aaaaaaaaabbccddddeeeeeeeeeffggghhiiiiiiiiijkllllmmnnnnnnoooooooopqqrrrrrrssssttttttuuuuvvwwxyyz";
 U32 Lexicon::nDist;
 
-Lexicon::Lexicon(Configuration& _config, U8 *pWords, U32 cb, U8 *_pBonusList, U32 _cbBonusList, Coord _size, U32 _cbWordMin)
-: config(_config), size(_size), score(0), dictionary(pWords, cb, _pBonusList, _cbBonusList), cbWordMin(_cbWordMin), iBonus(0),bBonusUsed(false), state(PLAY_IDLE), cLevelsConsecutive(0), cLevelsOneGame(0), cBonusWords(0)
+Lexicon::Lexicon(Configuration& _config, U8 *pWords, U32 cb, Coord _size, U32 _cbWordMin)
+: config(_config), size(_size), score(0), dictionary(pWords, cb), cbWordMin(_cbWordMin), iBonus(0),bBonusUsed(false), state(PLAY_IDLE), cLevelsConsecutive(0), cLevelsOneGame(0), cBonusWords(0)
 {
 	board=new U8[size.x * size.y+1];
 	board[size.x * size.y]=0;
@@ -35,6 +35,10 @@ Lexicon::Lexicon(Configuration& _config, U8 *pWords, U32 cb, U8 *_pBonusList, U3
 		clock = clockMax / 2;
 }
 
+void Lexicon::SetBonusWordList(const U8* pWords, U32 cCh) {
+	dictionary.SetBonusWordList(pWords, cCh);
+}
+
 void Lexicon::FillBoard() {
 	// Collect enough random words to fill board
 	char *aCh=new char[size.x * size.y];
@@ -42,7 +46,7 @@ void Lexicon::FillBoard() {
 
 	// Always put bonus word letters on board
 	U32 iEntry;
-	const U8 *pWord = dictionary.GetIBonus(iBonus);
+	const U8 *pWord = (dictionary.GetNBonus()? dictionary.GetIBonus(iBonus) : dictionary.Entry(Random::Value(dictionary.GetNWord())));
 
 	while (cCh < size.x * size.y - max(size.x, size.y)) {
 		U32 cb = dictionary.WordLen(pWord);
@@ -435,17 +439,19 @@ U32 Lexicon::DScore(const U8 *pCh, U32 cCh) {
 		bonus += aBonus[pCh[iCh] - 'a'];
 
 	// Give 10X bonus for matching "Bonus Word"
-	const U8 *pBonusWord=dictionary.GetIBonus(iBonus);
-	U32 cb=dictionary.WordLen(pBonusWord);
+	if (dictionary.GetNBonus()) {
+		const U8 *pBonusWord=dictionary.GetIBonus(iBonus);
+		U32 cb=dictionary.WordLen(pBonusWord);
 
-	// Look for it anywhere within the matching characters e.g. match COWBOY, get bonus for BOY
-	if (cCh >= cb)
-		for (U32 i=0; i <= cCh - cb; i++)
-			if (strncmp((const char *)pCh+i, (const char *)pBonusWord, cb) == 0) {
-				bonus *= 10;
-				bBonusUsed=true;
-				break;
-			}
+		// Look for it anywhere within the matching characters e.g. match COWBOY, get bonus for BOY
+		if (cCh >= cb)
+			for (U32 i=0; i <= cCh - cb; i++)
+				if (strncmp((const char *)pCh+i, (const char *)pBonusWord, cb) == 0) {
+					bonus *= 10;
+					bBonusUsed=true;
+					break;
+				}
+	}
 
 	// Record "Best Word"
 	if (bonus * dScore > dScoreBestWord) {
