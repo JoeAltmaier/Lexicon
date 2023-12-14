@@ -32,6 +32,7 @@ public:
 	bool SetStat(const char*, int32);
 	bool IncStat(const char*);
 	void Commit();
+	bool Reset(const char* pChName);
 
 private:
 	bool bStarted;

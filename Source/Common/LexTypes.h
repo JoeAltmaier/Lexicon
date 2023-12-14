@@ -28,7 +28,8 @@ enum {	// Notifications to parent element
 	notifyIDLE,
 	notifySTILL,
 	notifyDISCARD,
-	notifyBONUSWORDLIST
+	notifyBONUSWORDLIST,
+	notifyBONUSWORDLISTRESET
 };
 
 class Coord { 

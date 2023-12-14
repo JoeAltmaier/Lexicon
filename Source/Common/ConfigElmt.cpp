@@ -86,7 +86,7 @@ void ConfigElmt::OnBonusListCallback(BonusListCallback::Item*itemList, int nItem
 	}
 }
 
-// A SteamUGC file is available
+// A Bonus Word List (.bwl) file is available
 void ConfigElmt::OnDownloadCallback(uint64_t id, char *pFolder) {
 	BonusListCallback::Item* pItem = (BonusListCallback::Item*)selectSkin.GetItemDataPtr(selectSkin.GetCurSel());
 	if (id == pItem->id)
@@ -109,7 +109,22 @@ void ConfigElmt::OnDownloadCallback(uint64_t id, char *pFolder) {
 			pBWL[sz] = 0;
 
 			NotifyParent(notifyBONUSWORDLIST, (LPARAM)pBWL);
+
+			//? Do this here, or only when a game is actually started?//
+			// 
+			// Determine if the word list has changed since our last game
+			int32 bwlSize = SteamRemoteStorage()->GetFileSize("BonusWordList.txt");
+			if (bwlSize > 0) {
+				char bwlName[128];
+				if (SteamRemoteStorage()->FileRead("BonusWordList.txt", bwlName, bwlSize) == bwlSize) {
+					bwlName[bwlSize] = 0;
+					if (strcmp(bwlName, pItem->name) != 0) {
+						NotifyParent(notifyBONUSWORDLISTRESET, NULL);
+					}
+				}
+			}
+
+			SteamRemoteStorage()->FileWrite("BonusWordList.txt", pItem->name, strlen(pItem->name));
 		}
 	}
-
 }

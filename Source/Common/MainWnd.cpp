@@ -173,11 +173,12 @@ ERC MainWnd::OnElmtNotify(SElement* _pElmt, UINT _nCode, WPARAM _wParam, LPARAM 
 
 	case notifyIDLE:
 		if (pBoard)
-		pBoard->Event(ETilesBurned, NULL);
+			pBoard->Event(ETilesBurned, NULL);
 		break;
 
 	case notifySTILL:
-		pBoard->Event(EStill, NULL);
+		if (pBoard)
+			pBoard->Event(EStill, NULL);
 		break;
 
 	case notifyDISCARD:
@@ -187,6 +188,13 @@ ERC MainWnd::OnElmtNotify(SElement* _pElmt, UINT _nCode, WPARAM _wParam, LPARAM 
 
 	case notifyBONUSWORDLIST:
 		SetBonusList((U8*)_lParam, strlen((char*)_lParam));
+		break;
+
+	case notifyBONUSWORDLISTRESET:
+		if (achievement.Reset("LEXICON_BONUSLIST")) {
+			if (achievement.SetStat("LEXICON_BONUSWORD", 0l))
+				achievement.Commit();
+		}
 		break;
 
 	case IDB_SELECT_CANCEL:
@@ -214,13 +222,15 @@ void MainWnd::StartGame() {
 	elmtConfig.MoveOrderBottom();
 	elmtHelp.MoveOrderBottom();
 
-	pBoard = new Board(config, *this);
+	if (!pBoard)
+		pBoard = new Board(config, *this);
+
 	if (svtext.pString)
 		pBoard->SetBonusWordList((const U8*)svtext.pString, svtext.cb);
 	pBoard->Event(ENew, NULL); 
 }
 
-void MainWnd::GameOver(U32 score) { delete pBoard;  elmtStart.UpdateLeaderboards(score); }
+void MainWnd::GameOver(U32 score) { /*delete pBoard; pBoard = NULL;*/  elmtStart.UpdateLeaderboards(score); }
 
 void MainWnd::StartConfig() { elmtStart.MoveOrderBottom(); elmtConfig.MoveOrderTop(); }
 
@@ -275,6 +285,10 @@ void MainWnd::NextBonusWord(bool _bNext)
 	if (_bNext)
 	{
 		bNextBonusWord = true;
+		
+		if (!IsBonusList())
+			return; // let polling timer try again later
+
 		if (achievement.GetStat("LEXICON_BONUSWORD", &iBonus))
 		{
 			iBonus++;

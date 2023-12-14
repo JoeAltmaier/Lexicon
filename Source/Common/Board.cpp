@@ -22,7 +22,6 @@ Board::Board(Configuration &_config, MainWnd &_winBoard)
 }
 
 // Events from game actions (Lexicon, MainWnd)
-// Maybe make this a queue? Have to be thread-safe then
 
 void Board::Event(EventType evt, void *id) {
 	switch (evt) {

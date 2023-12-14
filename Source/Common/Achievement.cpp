@@ -53,3 +53,7 @@ void Achievement::Commit() {
 	SteamUserStats()->StoreStats();
 }
 
+bool Achievement::Reset(const char* pChName) {
+	return SteamUserStats()->ClearAchievement(pChName);
+}
+

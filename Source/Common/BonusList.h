@@ -29,7 +29,6 @@ public:
 	~BonusList();
 
 	void Start();
-	void Rotate();
 
 	void DownloadItem(uint64_t id);
 	const char* GetBonusListData(int id);
@@ -49,18 +48,6 @@ private:
 	char aFolder[MAX_PATH_NAME];
 	PublishedFileId_t idDownloaded;
 	STEAM_CALLBACK(BonusList, OnDownloadItemResult, DownloadItemResult_t);
-#if 0
-
-	// Called when SteamUserStats()->FindOrCreateBonusList() returns asynchronously
-	void OnFindBonusList(BonusListFindResult_t* pFindLearderboardResult, bool);
-	CCallResult<BonusList, BonusListFindResult_t> m_SteamCallResultCreateBonusList;
-
-	void OnUploadScore(BonusListcoreUploaded_t* pScoreUploadedResult, bool bIOFailure);
-	CCallResult<BonusList, BonusListcoreUploaded_t> m_SteamCallResultUploadScore;
-
-	void OnBonusListDownloadEntries(BonusListcoresDownloaded_t* pBonusListcoresDownloaded, bool bIOFailure);
-	CCallResult<BonusList, BonusListcoresDownloaded_t> m_SteamCallResultDownloadEntries;
-#endif
 
 	// Render details into callback format
 	void Report() {

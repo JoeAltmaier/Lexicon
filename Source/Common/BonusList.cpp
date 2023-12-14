@@ -21,46 +21,6 @@ BonusList::BonusList(BonusListCallback* _cbObject)
 BonusList::~BonusList() {
 }
 
-
-void BonusList::Rotate()
-{
-#if 0
-	switch (m_eBonusListData)
-	{
-	case k_EBonusListDataRequestGlobal:
-		m_eBonusListData = k_EBonusListDataRequestGlobalAroundUser;
-		break;
-	case k_EBonusListDataRequestGlobalAroundUser:
-		m_eBonusListData = k_EBonusListDataRequestFriends;
-		break;
-	case k_EBonusListDataRequestFriends:
-		m_eBonusListData = k_EBonusListDataRequestGlobal;
-		break;
-	}
-	if (m_hSteamBonusList) {
-		// Retrigger fetch of stats
-		SteamAPICall_t hSteamAPICall = SteamUserStats()->DownloadBonusListEntries(m_hSteamBonusList, m_eBonusListData,
-			-k_nMaxBonusListEntries / 2, k_nMaxBonusListEntries / 2);
-
-		if (hSteamAPICall) {
-			// Register for the async callback
-			m_SteamCallResultDownloadEntries.Set(hSteamAPICall, this, &BonusList::OnBonusListDownloadEntries);
-
-			m_nBonusListEntries = 0;
-//			Rebuild();
-
-			return;
-		}
-		else {
-			Report("No stats");
-			return;
-		}
-	}
-
-	Report("No Download API");
-#endif
-}
-
 void BonusList::Start()
 {
 	//CreateItem, AddAppDependency, SetItemTitle, SetItemDescription, SetItemContent(file), SetItemVisibility(k_ERemoteStoragePublishedFileVisibilityFriendsOnly), SubmitItemUpdate,
