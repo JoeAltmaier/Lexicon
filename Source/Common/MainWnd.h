@@ -96,6 +96,8 @@ private:
 	void LoadDictionary(TCHAR* pFileName);
 	void SelectBonusList();
 	void* LocateResource(_In_     int id, _In_     LPCSTR lpType, _Out_ UINT32 *size);
+	void Hide(SElement& elmt) { elmt.MoveOrderBottom(); elmt.EnableElement(false); }
+	void Show(SElement& elmt) { elmt.MoveOrderTop(); elmt.EnableElement(true); }
 
 public:
     PlayAreaElmt elmtPlay;

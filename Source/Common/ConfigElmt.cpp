@@ -84,6 +84,20 @@ void ConfigElmt::OnBonusListCallback(BonusListCallback::Item*itemList, int nItem
 		BonusListCallback::Item* pItem = new BonusListCallback::Item(itemList[iItem]);
 		selectSkin.SetItemDataPtr(iItem, pItem);
 	}
+
+	// Select current list
+	int32 bwlSize = SteamRemoteStorage()->GetFileSize("BonusWordList.txt");
+	if (bwlSize > 0) {
+		char bwlName[128];
+		if (SteamRemoteStorage()->FileRead("BonusWordList.txt", bwlName, bwlSize) == bwlSize) {
+			bwlName[bwlSize] = 0;
+			for (int iItem = 0; iItem < nItem; iItem++) 
+				if (strcmp(itemList[iItem].name, bwlName) == 0) {
+					selectSkin.SetCurSel(iItem);
+					break;
+				}
+		}
+	}
 }
 
 // A Bonus Word List (.bwl) file is available
@@ -108,8 +122,6 @@ void ConfigElmt::OnDownloadCallback(uint64_t id, char *pFolder) {
 			fread(pBWL, 1, sz, f);
 			pBWL[sz] = 0;
 
-			NotifyParent(notifyBONUSWORDLIST, (LPARAM)pBWL);
-
 			//? Do this here, or only when a game is actually started?//
 			// 
 			// Determine if the word list has changed since our last game
@@ -125,6 +137,8 @@ void ConfigElmt::OnDownloadCallback(uint64_t id, char *pFolder) {
 			}
 
 			SteamRemoteStorage()->FileWrite("BonusWordList.txt", pItem->name, strlen(pItem->name));
+
+			NotifyParent(notifyBONUSWORDLIST, (LPARAM)pBWL);
 		}
 	}
 }

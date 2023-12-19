@@ -188,6 +188,8 @@ ERC MainWnd::OnElmtNotify(SElement* _pElmt, UINT _nCode, WPARAM _wParam, LPARAM 
 
 	case notifyBONUSWORDLIST:
 		SetBonusList((U8*)_lParam, strlen((char*)_lParam));
+		if (pBoard)
+			pBoard->SetBonusWordList((const U8*)svtext.pString, svtext.cb);
 		break;
 
 	case notifyBONUSWORDLISTRESET:
@@ -218,9 +220,9 @@ void MainWnd::About()
 
 void MainWnd::StartGame() {
 	// Expose the main window play area itself
-	elmtStart.MoveOrderBottom();
-	elmtConfig.MoveOrderBottom();
-	elmtHelp.MoveOrderBottom();
+	Hide(elmtStart);
+	Hide(elmtConfig);
+	Hide(elmtHelp);
 
 	if (!pBoard)
 		pBoard = new Board(config, *this);
@@ -232,9 +234,9 @@ void MainWnd::StartGame() {
 
 void MainWnd::GameOver(U32 score) { /*delete pBoard; pBoard = NULL;*/  elmtStart.UpdateLeaderboards(score); }
 
-void MainWnd::StartConfig() { elmtStart.MoveOrderBottom(); elmtConfig.MoveOrderTop(); }
+void MainWnd::StartConfig() { Hide(elmtStart); Show(elmtConfig); }
 
-void MainWnd::StartHelp() { elmtStart.MoveOrderBottom(); elmtHelp.MoveOrderTop(); }
+void MainWnd::StartHelp() { Hide(elmtStart); Show(elmtHelp); }
 
 void MainWnd::Achieve(const char* pName) { if (achievement.SetAchievement(pName)) achievement.Commit(); }
 void MainWnd::Stat(const char* pName) { if (achievement.IncStat(pName)) achievement.Commit(); }
@@ -316,6 +318,9 @@ void MainWnd::NextBonusWord(bool _bNext)
 	else {
 		if (achievement.GetStat("LEXICON_BONUSWORD", &iBonus))
 		{
+			if (!IsBonusList())
+				return; // let polling timer try again later
+
 			// Use it in play
 			pBoard->Event(EBonusWord, (void*)iBonus);
 
@@ -327,7 +332,7 @@ void MainWnd::NextBonusWord(bool _bNext)
 	// else poll again later
 }
 
-void MainWnd::ReturnToMainScreen() { elmtHelp.MoveOrderBottom(); elmtStart.MoveOrderTop(); }
+void MainWnd::ReturnToMainScreen() { Hide(elmtHelp); Show(elmtStart); }
 
 void MainWnd::PopulateTiles(U8 *letters)
 {
